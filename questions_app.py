@@ -6,6 +6,7 @@ Run:
 """
 from __future__ import annotations
 
+import json
 import random
 import re
 import shutil
@@ -17,6 +18,31 @@ import customtkinter as ctk
 ROOT = Path(__file__).resolve().parent
 ACTIVE_DIR = ROOT / "data" / "questions" / "active"
 BACKLOG_DIR = ROOT / "data" / "questions" / "backlog"
+
+STATE_FILE = ROOT / ".app_state.json"
+STATE_KEY = "questions_font_scale"
+
+
+def load_font_scale() -> float:
+    try:
+        scale = json.loads(STATE_FILE.read_text()).get(STATE_KEY, 1.0)
+        return max(0.7, min(2.5, float(scale)))
+    except (OSError, ValueError, TypeError):
+        return 1.0
+
+
+def save_font_scale(scale: float) -> None:
+    try:
+        state = json.loads(STATE_FILE.read_text())
+        if not isinstance(state, dict):
+            state = {}
+    except (OSError, ValueError):
+        state = {}
+    state[STATE_KEY] = scale
+    try:
+        STATE_FILE.write_text(json.dumps(state, indent=2))
+    except OSError:
+        pass
 
 SECTION_RE = re.compile(r"^#\s+(Scenario|Question|Options|Explanation)\s*$")
 OPTION_RE = re.compile(r"^\s*(\d+)\.\s+(.*)$")
@@ -189,7 +215,7 @@ class QuestionsApp:
         self.check_vars: list[ctk.BooleanVar] = []
         self.submitted = False
 
-        self.font_scale = 1.0
+        self.font_scale = load_font_scale()
         self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
         self.title_font = self._font(18, "bold")
         self.section_font = self._font(11, "bold")
@@ -224,12 +250,14 @@ class QuestionsApp:
             return
         self.font_scale = new
         self._apply_font_scale()
+        save_font_scale(self.font_scale)
 
     def _reset_font(self) -> None:
         if self.font_scale == 1.0:
             return
         self.font_scale = 1.0
         self._apply_font_scale()
+        save_font_scale(self.font_scale)
 
     def _build_ui(self) -> None:
         # Top bar
