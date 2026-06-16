@@ -1,0 +1,8 @@
+Application:
+-	AppConfig is a capability of AWS Systems Manager (SSM). Manage, store, and quickly deploy application configurations independently of your code.
+-	AppFlow: integration service for transferring data securely between SaaS applications like Salesforce, SAP, Zendesk, Slack, ServiceNow, and AWS services.
+-	Application Migration Service (MGN): An automated lift-and-shift solution that simplifies, expedites, and lowers the cost of migrating applications to AWS.
+-	AppStream: streaming desktop applications to end user.
+-	AppSync: fully managed service for building scalable (GraphQL) APIs that connect app to data. Securely access, manipulate, and combine data from multiple sources in real time. Serverless.
+AppSync pipeline resolvers: aggregating data from multiple database tables. Server-side solution.
+-	Elastic Beanstalk is a PaaS, that deploys and manages applications without managing infrastructure.
