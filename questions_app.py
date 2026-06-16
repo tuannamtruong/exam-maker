@@ -138,17 +138,17 @@ def card(parent, **kwargs) -> ctk.CTkFrame:
     )
 
 
-def section_label(parent, text: str) -> ctk.CTkLabel:
+def section_label(parent, text: str, font: ctk.CTkFont | None = None) -> ctk.CTkLabel:
     return ctk.CTkLabel(
         parent,
         text=text.upper(),
         text_color=P["primary"],
-        font=ctk.CTkFont(size=11, weight="bold"),
+        font=font or ctk.CTkFont(size=11, weight="bold"),
         anchor="w",
     )
 
 
-def readonly_textbox(parent, height: int) -> ctk.CTkTextbox:
+def readonly_textbox(parent, height: int, font: ctk.CTkFont | None = None) -> ctk.CTkTextbox:
     tb = ctk.CTkTextbox(
         parent,
         height=height,
@@ -156,7 +156,7 @@ def readonly_textbox(parent, height: int) -> ctk.CTkTextbox:
         fg_color=P["surface"],
         text_color=P["text"],
         border_width=0,
-        font=ctk.CTkFont(size=13),
+        font=font or ctk.CTkFont(size=13),
     )
     tb.configure(state="disabled")
     return tb
@@ -189,11 +189,47 @@ class QuestionsApp:
         self.check_vars: list[ctk.BooleanVar] = []
         self.submitted = False
 
+        self.font_scale = 1.0
+        self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
+        self.title_font = self._font(18, "bold")
+        self.section_font = self._font(11, "bold")
+        self.body_font = self._font(13)
+        self.option_font = self._font(13)
+        self.button_font = self._font(14, "bold")
+        self.switch_font = self._font(13)
+
         self._build_ui()
         self.reload(reset_index=True)
 
         self.root.bind_all("<Control-n>", lambda _e: self.add_dialog())
         self.root.bind_all("<Command-n>", lambda _e: self.add_dialog())
+        self.root.bind_all("<Control-plus>", lambda _e: self._bump_font(0.1))
+        self.root.bind_all("<Control-equal>", lambda _e: self._bump_font(0.1))
+        self.root.bind_all("<Control-minus>", lambda _e: self._bump_font(-0.1))
+        self.root.bind_all("<Control-0>", lambda _e: self._reset_font())
+
+    def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
+        f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
+        self._fonts.append((f, size, weight))
+        return f
+
+    def _apply_font_scale(self) -> None:
+        for f, base, _weight in self._fonts:
+            f.configure(size=max(8, int(round(base * self.font_scale))))
+
+    def _bump_font(self, delta: float) -> None:
+        new = round(self.font_scale + delta, 2)
+        new = max(0.7, min(2.5, new))
+        if new == self.font_scale:
+            return
+        self.font_scale = new
+        self._apply_font_scale()
+
+    def _reset_font(self) -> None:
+        if self.font_scale == 1.0:
+            return
+        self.font_scale = 1.0
+        self._apply_font_scale()
 
     def _build_ui(self) -> None:
         # Top bar
@@ -206,27 +242,44 @@ class QuestionsApp:
             top,
             textvariable=self.title_var,
             text_color=P["text"],
-            font=ctk.CTkFont(size=18, weight="bold"),
+            font=self.title_font,
         ).pack(side="left")
 
         ctk.CTkButton(
             top, text="+ Add  (Ctrl+N)", width=130, corner_radius=8,
             fg_color=P["primary"], hover_color=P["primary_hv"],
             text_color="white",
+            font=self.switch_font,
             command=self.add_dialog,
         ).pack(side="right")
 
         ctk.CTkSwitch(
             top, text="Shuffle", variable=self.shuffled,
             progress_color=P["primary"],
+            font=self.switch_font,
             command=lambda: self.reload(reset_index=True),
         ).pack(side="right", padx=8)
 
         ctk.CTkSwitch(
             top, text="Show backlog", variable=self.show_backlog,
             progress_color=P["primary"],
+            font=self.switch_font,
             command=lambda: self.reload(reset_index=True),
         ).pack(side="right", padx=8)
+
+        ctk.CTkButton(
+            top, text="A+", width=36, corner_radius=8,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"], font=self.switch_font,
+            command=lambda: self._bump_font(0.1),
+        ).pack(side="right", padx=(8, 0))
+
+        ctk.CTkButton(
+            top, text="A−", width=36, corner_radius=8,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"], font=self.switch_font,
+            command=lambda: self._bump_font(-0.1),
+        ).pack(side="right", padx=(0, 4))
 
         # Scrollable content
         scroll = ctk.CTkScrollableFrame(self.root, fg_color=P["bg"])
@@ -235,21 +288,21 @@ class QuestionsApp:
         # Scenario card
         sc = card(scroll)
         sc.pack(fill="x", pady=6)
-        section_label(sc, "Scenario").pack(anchor="w", padx=16, pady=(12, 4))
-        self.scenario_text = readonly_textbox(sc, height=120)
+        section_label(sc, "Scenario", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
+        self.scenario_text = readonly_textbox(sc, height=120, font=self.body_font)
         self.scenario_text.pack(fill="x", padx=16, pady=(0, 12))
 
         # Question card
         qc = card(scroll)
         qc.pack(fill="x", pady=6)
-        section_label(qc, "Question").pack(anchor="w", padx=16, pady=(12, 4))
-        self.question_text = readonly_textbox(qc, height=64)
+        section_label(qc, "Question", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
+        self.question_text = readonly_textbox(qc, height=64, font=self.body_font)
         self.question_text.pack(fill="x", padx=16, pady=(0, 12))
 
         # Options card
         oc = card(scroll)
         oc.pack(fill="x", pady=6)
-        section_label(oc, "Options").pack(anchor="w", padx=16, pady=(12, 4))
+        section_label(oc, "Options", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
         self.options_frame = ctk.CTkFrame(oc, fg_color="transparent")
         self.options_frame.pack(fill="x", padx=16, pady=(0, 12))
 
@@ -261,7 +314,7 @@ class QuestionsApp:
             actions, text="Submit", width=130, height=40, corner_radius=10,
             fg_color=P["accent"], hover_color=P["accent_hv"],
             text_color="white",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=self.button_font,
             command=self.submit,
         )
         self.submit_btn.pack(side="left")
@@ -270,6 +323,7 @@ class QuestionsApp:
             actions, text="< Previous", width=110, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
+            font=self.switch_font,
             command=self.prev,
         ).pack(side="left", padx=8)
 
@@ -277,6 +331,7 @@ class QuestionsApp:
             actions, text="Next >", width=110, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
+            font=self.switch_font,
             command=self.next,
         ).pack(side="left", padx=0)
 
@@ -285,6 +340,7 @@ class QuestionsApp:
             fg_color="transparent", hover_color=P["soft"],
             text_color=P["primary"],
             border_color=P["primary"], border_width=1,
+            font=self.switch_font,
             command=self.toggle_backlog,
         )
         self.move_btn.pack(side="right")
@@ -292,8 +348,8 @@ class QuestionsApp:
         # Explanation card
         ec = card(scroll)
         ec.pack(fill="both", expand=True, pady=6)
-        section_label(ec, "Explanation").pack(anchor="w", padx=16, pady=(12, 4))
-        self.explanation_text = readonly_textbox(ec, height=220)
+        section_label(ec, "Explanation", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
+        self.explanation_text = readonly_textbox(ec, height=220, font=self.body_font)
         self.explanation_text.pack(fill="both", expand=True, padx=16, pady=(0, 12))
 
     # ---- data ----
@@ -346,7 +402,7 @@ class QuestionsApp:
                 fg_color=P["primary"],
                 hover_color=P["primary_hv"],
                 text_color=P["text"],
-                font=ctk.CTkFont(size=13),
+                font=self.option_font,
                 checkbox_width=20, checkbox_height=20,
                 corner_radius=4,
             )

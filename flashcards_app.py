@@ -115,11 +115,48 @@ class FlashcardsApp:
         self.current: dict | None = None
         self.flipped = False
 
+        self.font_scale = 1.0
+        self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
+        self.title_font = self._font(18, "bold")
+        self.category_font = self._font(12, "bold")
+        self.face_font = self._font(11, "bold")
+        self.front_font = self._font(20, "bold")
+        self.back_font = self._font(15)
+        self.button_font = self._font(14, "bold")
+        self.switch_font = self._font(13)
+
         self._build_ui()
         self.reload(reset_index=True)
 
         self.root.bind_all("<Control-n>", lambda _e: self.add_dialog())
         self.root.bind_all("<Command-n>", lambda _e: self.add_dialog())
+        self.root.bind_all("<Control-plus>", lambda _e: self._bump_font(0.1))
+        self.root.bind_all("<Control-equal>", lambda _e: self._bump_font(0.1))
+        self.root.bind_all("<Control-minus>", lambda _e: self._bump_font(-0.1))
+        self.root.bind_all("<Control-0>", lambda _e: self._reset_font())
+
+    def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
+        f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
+        self._fonts.append((f, size, weight))
+        return f
+
+    def _apply_font_scale(self) -> None:
+        for f, base, _weight in self._fonts:
+            f.configure(size=max(8, int(round(base * self.font_scale))))
+
+    def _bump_font(self, delta: float) -> None:
+        new = round(self.font_scale + delta, 2)
+        new = max(0.7, min(2.5, new))
+        if new == self.font_scale:
+            return
+        self.font_scale = new
+        self._apply_font_scale()
+
+    def _reset_font(self) -> None:
+        if self.font_scale == 1.0:
+            return
+        self.font_scale = 1.0
+        self._apply_font_scale()
 
     def _build_ui(self) -> None:
         # Top bar
@@ -132,27 +169,44 @@ class FlashcardsApp:
             top,
             textvariable=self.title_var,
             text_color=P["text"],
-            font=ctk.CTkFont(size=18, weight="bold"),
+            font=self.title_font,
         ).pack(side="left")
 
         ctk.CTkButton(
             top, text="+ Add  (Ctrl+N)", width=130, corner_radius=8,
             fg_color=P["primary"], hover_color=P["primary_hv"],
             text_color="white",
+            font=self.switch_font,
             command=self.add_dialog,
         ).pack(side="right")
 
         ctk.CTkSwitch(
             top, text="Shuffle", variable=self.shuffled,
             progress_color=P["primary"],
+            font=self.switch_font,
             command=lambda: self.reload(reset_index=True),
         ).pack(side="right", padx=8)
 
         ctk.CTkSwitch(
             top, text="Show backlog", variable=self.show_backlog,
             progress_color=P["primary"],
+            font=self.switch_font,
             command=lambda: self.reload(reset_index=True),
         ).pack(side="right", padx=8)
+
+        ctk.CTkButton(
+            top, text="A+", width=36, corner_radius=8,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"], font=self.switch_font,
+            command=lambda: self._bump_font(0.1),
+        ).pack(side="right", padx=(8, 0))
+
+        ctk.CTkButton(
+            top, text="A−", width=36, corner_radius=8,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"], font=self.switch_font,
+            command=lambda: self._bump_font(-0.1),
+        ).pack(side="right", padx=(0, 4))
 
         # Category strip
         self.category_var = ctk.StringVar(value="")
@@ -160,7 +214,7 @@ class FlashcardsApp:
             self.root,
             textvariable=self.category_var,
             text_color=P["muted"],
-            font=ctk.CTkFont(size=12, weight="bold"),
+            font=self.category_font,
         ).pack(anchor="w", padx=20, pady=(0, 4))
 
         # Card surface
@@ -178,7 +232,7 @@ class FlashcardsApp:
             self.card,
             textvariable=self.face_var,
             text_color=P["primary"],
-            font=ctk.CTkFont(size=11, weight="bold"),
+            font=self.face_font,
         ).pack(anchor="ne", padx=14, pady=10)
 
         self.card_text = ctk.CTkTextbox(
@@ -187,7 +241,7 @@ class FlashcardsApp:
             fg_color="transparent",
             border_width=0,
             text_color=P["text"],
-            font=ctk.CTkFont(size=20, weight="bold"),
+            font=self.front_font,
         )
         self.card_text.pack(fill="both", expand=True, padx=36, pady=(0, 28))
         self.card_text.configure(state="disabled")
@@ -204,7 +258,7 @@ class FlashcardsApp:
             btns, text="Flip", width=120, height=40, corner_radius=10,
             fg_color=P["accent"], hover_color=P["accent_hv"],
             text_color="white",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=self.button_font,
             command=self.flip,
         ).pack(side="left")
 
@@ -212,6 +266,7 @@ class FlashcardsApp:
             btns, text="< Previous", width=110, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
+            font=self.switch_font,
             command=self.prev,
         ).pack(side="left", padx=8)
 
@@ -219,6 +274,7 @@ class FlashcardsApp:
             btns, text="Next >", width=110, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
+            font=self.switch_font,
             command=self.next,
         ).pack(side="left")
 
@@ -227,6 +283,7 @@ class FlashcardsApp:
             fg_color="transparent", hover_color=P["soft"],
             text_color=P["primary"],
             border_color=P["primary"], border_width=1,
+            font=self.switch_font,
             command=self.toggle_backlog,
         )
         self.move_btn.pack(side="right")
@@ -279,12 +336,12 @@ class FlashcardsApp:
             self.card.configure(fg_color=P["card_back"])
             self._set_card(self.current["back"])
             self.face_var.set("BACK — click to flip")
-            self.card_text.configure(font=ctk.CTkFont(size=15))
+            self.card_text.configure(font=self.back_font)
         else:
             self.card.configure(fg_color=P["card_front"])
             self._set_card(self.current["front"])
             self.face_var.set("FRONT — click to flip")
-            self.card_text.configure(font=ctk.CTkFont(size=20, weight="bold"))
+            self.card_text.configure(font=self.front_font)
 
     def next(self) -> None:
         if not self.items:
