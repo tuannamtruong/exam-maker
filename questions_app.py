@@ -237,15 +237,23 @@ class QuestionsApp:
         self.root.bind_all("<Control-0>", lambda _e: self._reset_font())
 
         # Hotkeys (bound to the main window so the Add / Jump dialogs — separate
-        # Toplevels — are unaffected while typing in them).
-        #   a / d / arrows : scroll the content up & down (no horizontal scroll)
+        # Toplevels — are unaffected while typing in them). WASD mirrors arrows.
+        #   Left  / a      : previous question
+        #   Right / d      : next question
+        #   Up    / w      : scroll the content up
+        #   Down  / s      : scroll the content down
         #   space / Return : submit
         #   1–7            : toggle that option
         #   b              : move to / restore from backlog
         #   g              : jump to a specific question
-        for key in ("<KeyPress-a>", "<KeyPress-A>", "<Up>", "<Left>"):
+        #   e              : edit the current question
+        for key in ("<Left>", "<KeyPress-a>", "<KeyPress-A>"):
+            self.root.bind(key, lambda _e: self.prev())
+        for key in ("<Right>", "<KeyPress-d>", "<KeyPress-D>"):
+            self.root.bind(key, lambda _e: self.next())
+        for key in ("<Up>", "<KeyPress-w>", "<KeyPress-W>"):
             self.root.bind(key, lambda _e: self._scroll(-3))
-        for key in ("<KeyPress-d>", "<KeyPress-D>", "<Down>", "<Right>"):
+        for key in ("<Down>", "<KeyPress-s>", "<KeyPress-S>"):
             self.root.bind(key, lambda _e: self._scroll(3))
         for key in ("<space>", "<Return>"):
             self.root.bind(key, lambda _e: self.submit())
@@ -253,6 +261,8 @@ class QuestionsApp:
             self.root.bind(key, lambda _e: self.toggle_backlog())
         for key in ("<KeyPress-g>", "<KeyPress-G>"):
             self.root.bind(key, lambda _e: self.jump_dialog())
+        for key in ("<KeyPress-e>", "<KeyPress-E>"):
+            self.root.bind(key, lambda _e: self.edit_dialog())
         for n in range(1, 8):
             self.root.bind(str(n), lambda _e, i=n: self._toggle_option(i))
 
@@ -296,7 +306,7 @@ class QuestionsApp:
         ).pack(side="left")
 
         ctk.CTkButton(
-            top, text="+ Add  (Ctrl+N)", width=130, corner_radius=8,
+            top, text="+ Add", width=130, corner_radius=8,
             fg_color=P["primary"], hover_color=P["primary_hv"],
             text_color="white",
             font=self.switch_font,
@@ -388,11 +398,27 @@ class QuestionsApp:
         ).pack(side="left", padx=0)
 
         ctk.CTkButton(
-            actions, text="Jump  (G)", width=100, height=40, corner_radius=10,
+            actions, text="Jump", width=90, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
             font=self.switch_font,
             command=self.jump_dialog,
+        ).pack(side="left", padx=8)
+
+        ctk.CTkButton(
+            actions, text="Edit", width=90, height=40, corner_radius=10,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.edit_dialog,
+        ).pack(side="left", padx=0)
+
+        ctk.CTkButton(
+            actions, text="Hotkeys", width=90, height=40, corner_radius=10,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.show_hotkeys,
         ).pack(side="left", padx=8)
 
         self.move_btn = ctk.CTkButton(
@@ -573,6 +599,53 @@ class QuestionsApp:
     def add_dialog(self) -> None:
         AddQuestionDialog(self.root, on_save=self._save_new)
 
+    def edit_dialog(self) -> None:
+        if not self.current:
+            return
+        AddQuestionDialog(self.root, on_save=self._save_edit, initial=self.current)
+
+    def show_hotkeys(self) -> None:
+        rows = [
+            ("← / A", "Previous question"),
+            ("→ / D", "Next question"),
+            ("↑ / W", "Scroll up"),
+            ("↓ / S", "Scroll down"),
+            ("Space / Enter", "Submit"),
+            ("1 – 7", "Toggle that option"),
+            ("G", "Jump to a question"),
+            ("E", "Edit current question"),
+            ("B", "Move to / restore from backlog"),
+            ("Ctrl + N", "Add a new question"),
+            ("Ctrl + +/-/0", "Font larger / smaller / reset"),
+        ]
+
+        top = ctk.CTkToplevel(self.root)
+        top.title("Hotkeys")
+        top.configure(fg_color=P["bg"])
+        top.transient(self.root)
+        top.after(50, top.grab_set)
+        top.bind("<Escape>", lambda _e: top.destroy())
+
+        frame = ctk.CTkFrame(top, fg_color="transparent")
+        frame.pack(padx=24, pady=20)
+        frame.grid_columnconfigure(0, weight=0)
+        frame.grid_columnconfigure(1, weight=1)
+
+        key_font = ctk.CTkFont(family="monospace", size=13)
+        for r, (key, action) in enumerate(rows):
+            ctk.CTkLabel(frame, text=key, text_color=P["primary"], font=key_font,
+                         anchor="w").grid(row=r, column=0, sticky="w", padx=(0, 24), pady=3)
+            ctk.CTkLabel(frame, text=action, text_color=P["text"],
+                         anchor="w").grid(row=r, column=1, sticky="w", pady=3)
+
+    def _save_edit(self, scenario: str, question: str, options: list[str], correct: list[int], explanation: str) -> None:
+        if not self.current:
+            return
+        # In-place edit of the single current item; the file set is unchanged,
+        # so just rewrite and re-render the same index.
+        write_md(self.current["path"], scenario, question, options, correct, explanation)
+        self.render()
+
     def _save_new(self, scenario: str, question: str, options: list[str], correct: list[int], explanation: str) -> None:
         ACTIVE_DIR.mkdir(parents=True, exist_ok=True)
         idx = next_index(ACTIVE_DIR)
@@ -591,10 +664,10 @@ class QuestionsApp:
 
 
 class AddQuestionDialog:
-    def __init__(self, parent, on_save) -> None:
+    def __init__(self, parent, on_save, initial: dict | None = None) -> None:
         self.on_save = on_save
         self.top = ctk.CTkToplevel(parent)
-        self.top.title("Add Question")
+        self.top.title("Edit Question" if initial else "Add Question")
         self.top.geometry("720x780")
         self.top.configure(fg_color=P["bg"])
         self.top.transient(parent)
@@ -632,6 +705,13 @@ class AddQuestionDialog:
                                           text_color=P["text"])
         self.explanation.pack(fill="x", pady=(0, 8))
 
+        if initial:
+            self.scenario.insert("1.0", initial.get("scenario", ""))
+            self.question.insert("1.0", initial.get("question", ""))
+            self.options.insert("1.0", "\n".join(initial.get("options", [])))
+            self.correct.insert(0, ",".join(str(i) for i in initial.get("correct", [])))
+            self.explanation.insert("1.0", initial.get("explanation", ""))
+
         btns = ctk.CTkFrame(frm, fg_color="transparent")
         btns.pack(fill="x", pady=8)
         ctk.CTkButton(btns, text="Cancel", corner_radius=8, fg_color=P["soft"],
@@ -652,8 +732,8 @@ class AddQuestionDialog:
         if not (2 <= len(options) <= 7):
             messagebox.showerror("Validation", "Need 2 to 7 options.", parent=self.top)
             return
-        if not question:
-            messagebox.showerror("Validation", "Question is required.", parent=self.top)
+        if not scenario and not question:
+            messagebox.showerror("Validation", "Provide a Scenario or a Question (at least one).", parent=self.top)
             return
         try:
             correct = sorted({int(p.strip()) for p in correct_raw.split(",") if p.strip()})

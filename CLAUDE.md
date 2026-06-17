@@ -18,7 +18,8 @@ exam-maker/
 ├── add_flashcard.py            # CLI: stdin JSON -> append new flashcard .md
 ├── import_data.py              # one-shot importer
 ├── scripts/
-│   └── stats.py                # active / backlog counts
+│   ├── stats.py                # active / backlog counts
+│   └── docx_to_text.py         # .docx -> .txt helper for importer input
 ├── .claude/skills/exam-add/
 │   └── SKILL.md                # agent skill for "add a question/flashcard..."
 └── data/
@@ -48,6 +49,41 @@ System packages required (one-time): `python3-tk`, `python3.12-venv`.
 ## Backlog model
 
 "Backlog" means *hidden from rotation, not deleted*. Implemented as a sibling folder. Each app has a "Show backlog" switch; while viewing the backlog, the **Move to Backlog** button becomes **Restore to Active**. File moves are done with `shutil.move`. Filename collisions are auto-suffixed with `-1`, `-2`, …
+
+## Hotkeys
+
+Bound to the main window so the Add / Jump / Edit dialogs (separate Toplevels)
+are unaffected while typing in them. WASD mirrors the arrow keys in both apps.
+The questions app has a **Hotkeys** button that shows this list in-app.
+
+**Questions app**
+
+| Key            | Action                          |
+| -------------- | ------------------------------- |
+| `←` / `a`      | Previous question               |
+| `→` / `d`      | Next question                   |
+| `↑` / `w`      | Scroll content up               |
+| `↓` / `s`      | Scroll content down             |
+| `Space` / `Enter` | Submit                       |
+| `1`–`7`        | Toggle that option              |
+| `g`            | Jump to a question              |
+| `e`            | Edit the current question       |
+| `b`            | Move to / restore from backlog  |
+| `Ctrl+N`       | Add a new question              |
+| `Ctrl` `+`/`-`/`0` | Font larger / smaller / reset |
+
+**Flashcards app**
+
+| Key            | Action                          |
+| -------------- | ------------------------------- |
+| `Space`        | Flip card                       |
+| `←` / `a`      | Previous card                   |
+| `→` / `d`      | Next card                       |
+| `g`            | Jump to a card                  |
+| `e`            | Edit the current card           |
+| `b`            | Move to / restore from backlog  |
+| `Ctrl+N`       | Add a new flashcard             |
+| `Ctrl` `+`/`-`/`0` | Font larger / smaller / reset |
 
 ## Data format — questions
 
@@ -109,8 +145,12 @@ application configurations independently of your code.
 - *move* items between `active/` and `backlog/` (done by the apps)
 
 If the user wants to fix wording or correct-answer marking on an existing item,
-they edit the `.md` by hand. Don't bulk-rewrite, don't re-render, don't migrate
-the format silently.
+they edit the `.md` by hand, or use the in-app **Edit** dialog (the `e` key /
+"Edit" button), which rewrites that single current item in place via `write_md`.
+This rule forbids *automation* silently rewriting items — the agent skill, bulk
+re-renders, format migrations. It does not forbid the user editing one item
+deliberately. Don't bulk-rewrite, don't re-render, don't migrate the format
+silently.
 
 ## Adding items via the agent skill
 

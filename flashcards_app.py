@@ -146,8 +146,8 @@ class FlashcardsApp:
         self.title_font = self._font(18, "bold")
         self.category_font = self._font(12, "bold")
         self.face_font = self._font(11, "bold")
-        self.front_font = self._font(20, "bold")
-        self.back_font = self._font(15)
+        self.front_font = self._font(28, "bold")
+        self.back_font = self._font(22)
         self.button_font = self._font(14, "bold")
         self.switch_font = self._font(13)
 
@@ -172,6 +172,8 @@ class FlashcardsApp:
             self.root.bind(key, lambda _e: self.toggle_backlog())
         for key in ("<KeyPress-g>", "<KeyPress-G>"):
             self.root.bind(key, lambda _e: self.jump_dialog())
+        for key in ("<KeyPress-e>", "<KeyPress-E>"):
+            self.root.bind(key, lambda _e: self.edit_dialog())
 
     def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
         f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
@@ -213,7 +215,7 @@ class FlashcardsApp:
         ).pack(side="left")
 
         ctk.CTkButton(
-            top, text="+ Add  (Ctrl+N)", width=130, corner_radius=8,
+            top, text="+ Add", width=130, corner_radius=8,
             fg_color=P["primary"], hover_color=P["primary_hv"],
             text_color="white",
             font=self.switch_font,
@@ -275,20 +277,23 @@ class FlashcardsApp:
             font=self.face_font,
         ).pack(anchor="ne", padx=14, pady=10)
 
-        self.card_text = ctk.CTkTextbox(
+        # A Label (not a Textbox) so the content centres both horizontally and
+        # vertically within the card. wraplength is kept in sync with the card
+        # width via <Configure> below.
+        self.card_text = ctk.CTkLabel(
             self.card,
-            wrap="word",
-            fg_color="transparent",
-            border_width=0,
+            text="",
             text_color=P["text"],
             font=self.front_font,
+            justify="center",
+            wraplength=680,
         )
         self.card_text.pack(fill="both", expand=True, padx=36, pady=(0, 28))
-        self.card_text.configure(state="disabled")
 
-        # click on the card area flips
+        # click on the card area flips; resize keeps wrapping width current
         for w in (self.card, self.card_text):
             w.bind("<Button-1>", lambda _e: self.flip())
+        self.card.bind("<Configure>", self._update_wraplength)
 
         # Buttons
         btns = ctk.CTkFrame(self.root, fg_color=P["bg"])
@@ -319,12 +324,20 @@ class FlashcardsApp:
         ).pack(side="left")
 
         ctk.CTkButton(
-            btns, text="Jump  (G)", width=100, height=40, corner_radius=10,
+            btns, text="Jump", width=100, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
             font=self.switch_font,
             command=self.jump_dialog,
         ).pack(side="left", padx=8)
+
+        ctk.CTkButton(
+            btns, text="Edit  (E)", width=100, height=40, corner_radius=10,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.edit_dialog,
+        ).pack(side="left")
 
         self.move_btn = ctk.CTkButton(
             btns, text="Move to Backlog", width=160, height=40, corner_radius=10,
@@ -374,10 +387,10 @@ class FlashcardsApp:
         self.face_var.set("FRONT — click to flip")
 
     def _set_card(self, content: str) -> None:
-        self.card_text.configure(state="normal")
-        self.card_text.delete("1.0", "end")
-        self.card_text.insert("1.0", content)
-        self.card_text.configure(state="disabled")
+        self.card_text.configure(text=content)
+
+    def _update_wraplength(self, event) -> None:
+        self.card_text.configure(wraplength=max(200, event.width - 80))
 
     def flip(self) -> None:
         if not self.current:
@@ -436,6 +449,18 @@ class FlashcardsApp:
     def add_dialog(self) -> None:
         AddFlashcardDialog(self.root, on_save=self._save_new)
 
+    def edit_dialog(self) -> None:
+        if not self.current:
+            return
+        AddFlashcardDialog(self.root, on_save=self._save_edit, initial=self.current)
+
+    def _save_edit(self, category: str, front: str, back: str) -> None:
+        if not self.current:
+            return
+        # In-place edit of the single current card; the file set is unchanged.
+        write_md(self.current["path"], category, front, back)
+        self.render()
+
     def _save_new(self, category: str, front: str, back: str) -> None:
         ACTIVE_DIR.mkdir(parents=True, exist_ok=True)
         idx = next_index(ACTIVE_DIR)
@@ -454,10 +479,10 @@ class FlashcardsApp:
 
 
 class AddFlashcardDialog:
-    def __init__(self, parent, on_save) -> None:
+    def __init__(self, parent, on_save, initial: dict | None = None) -> None:
         self.on_save = on_save
         self.top = ctk.CTkToplevel(parent)
-        self.top.title("Add Flashcard")
+        self.top.title("Edit Flashcard" if initial else "Add Flashcard")
         self.top.geometry("620x560")
         self.top.configure(fg_color=P["bg"])
         self.top.transient(parent)
@@ -488,6 +513,11 @@ class AddFlashcardDialog:
                                    border_width=1, border_color=P["border"],
                                    text_color=P["text"])
         self.back.pack(fill="both", expand=True, pady=(0, 8))
+
+        if initial:
+            self.category.insert(0, initial.get("category", ""))
+            self.front.insert("1.0", initial.get("front", ""))
+            self.back.insert("1.0", initial.get("back", ""))
 
         btns = ctk.CTkFrame(frm, fg_color="transparent")
         btns.pack(fill="x", pady=8)
