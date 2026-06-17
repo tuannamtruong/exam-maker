@@ -58,9 +58,17 @@ From the raw paste, build these fields:
   first "Local Secondary Index (LSI)", then "LSI"; "Global Secondary Index (GSI)"
   then "GSI". This is one of the few edits to make to the otherwise-verbatim
   prose: collapse repeated long forms ("Local Secondary Index" → "LSI") into the
-  acronym after it's been introduced. Common ones: LSI, GSI. The scenario,
-  question, and option text stay verbatim — acronym substitution applies to the
-  explanation only.
+  acronym after it's been introduced.
+
+  **Pre-approved terms — always collapse, every occurrence:** ALB, ELB, CA
+  (certificate authority), ACM (AWS Certificate Manager), ASG (Auto Scaling
+  Group), NLB (Network Load Balancer), IaC (Infrastructure as Code), LSI, GSI.
+  These are so familiar you don't need to spell them out at all — use the acronym
+  throughout the explanation, including the first mention (no need to write the
+  long form even once). Also strip redundant trailing nouns the source bolts onto
+  an acronym: "ELB load balancer" → "ELB", "ALB load balancer" → "ALB". The
+  scenario, question, and option text stay verbatim — acronym substitution
+  applies to the explanation only.
 
 ### Boilerplate to strip
 
@@ -76,6 +84,22 @@ After building the fields, write them as JSON (`scenario`, `question`,
 `options`, `correct`, `explanation`) and **preview with the driver — it renders
 the exact `.md` but writes nothing.** Scratch files go in `/tmp` (reads/writes
 there are pre-approved, so they never prompt):
+
+**Always overwrite `/tmp/original.md` and `/tmp/question.json` fresh — they are
+reused scratch paths that almost certainly hold a *previous* question.** The
+`Write` tool refuses to clobber a file it hasn't Read this session, so don't
+fight it: write both files with `Bash` (heredoc), which overwrites
+unconditionally and never blocks on stale content. Never carry over leftover
+text from an earlier run.
+
+```bash
+cat > /tmp/question.json <<'JSON'
+{ ...the JSON you built... }
+JSON
+cat > /tmp/original.md <<'ORIG'
+...the raw pasted source, verbatim...
+ORIG
+```
 
 ```bash
 python3 .claude/skills/add-question/preview.py < /tmp/question.json > /tmp/adjusted.md
@@ -104,6 +128,14 @@ list** — e.g. "removed the `Hence, the correct answer is:` block", "mapped the
 three `The option that says…` paragraphs to options 2/3/4", "moved the AWS Config
 rationale to the top". The VS Code diff plus this list is the mandatory approval
 gate.
+
+**Always take the user's edits in the diff view.** The user may edit
+`/tmp/adjusted.md` directly (it's the right pane of the diff) instead of
+describing changes in chat. Before appending, **re-read `/tmp/adjusted.md`**,
+fold any edits back into `/tmp/question.json` (it, not `adjusted.md`, is the
+source piped to the CLI), then **re-render and confirm the rendered preview
+matches `adjusted.md` byte-for-byte**. Their hand-edits win over your generated
+version — never discard them or append the pre-edit JSON.
 
 ## Append (only after approval)
 
