@@ -721,6 +721,11 @@ class AddQuestionDialog:
                       hover_color=P["primary_hv"], text_color="white",
                       command=self._save).pack(side="right")
 
+        # Ctrl+S saves, Esc cancels (bound on the Toplevel so they fire from any
+        # focused field).
+        self.top.bind("<Control-s>", lambda _e: self._save())
+        self.top.bind("<Escape>", lambda _e: self.top.destroy())
+
     def _save(self) -> None:
         scenario = self.scenario.get("1.0", "end").strip()
         question = self.question.get("1.0", "end").strip()

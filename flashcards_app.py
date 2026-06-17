@@ -332,7 +332,7 @@ class FlashcardsApp:
         ).pack(side="left", padx=8)
 
         ctk.CTkButton(
-            btns, text="Edit  (E)", width=100, height=40, corner_radius=10,
+            btns, text="Edit", width=100, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
             font=self.switch_font,
@@ -527,6 +527,11 @@ class AddFlashcardDialog:
         ctk.CTkButton(btns, text="Save", corner_radius=8, fg_color=P["primary"],
                       hover_color=P["primary_hv"], text_color="white",
                       command=self._save).pack(side="right")
+
+        # Ctrl+S saves, Esc cancels (bound on the Toplevel so they fire from any
+        # focused field).
+        self.top.bind("<Control-s>", lambda _e: self._save())
+        self.top.bind("<Escape>", lambda _e: self.top.destroy())
 
     def _save(self) -> None:
         category = self.category.get().strip()
