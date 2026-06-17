@@ -67,6 +67,7 @@ The questions app has a **Hotkeys** button that shows this list in-app.
 | `Space` / `Enter` | Submit                       |
 | `1`–`7`        | Toggle that option              |
 | `g`            | Jump to a question              |
+| `f` / `/` / `Ctrl+F` | Search questions by text  |
 | `e`            | Edit the current question       |
 | `b`            | Move to / restore from backlog  |
 | `Ctrl+N`       | Add a new question              |

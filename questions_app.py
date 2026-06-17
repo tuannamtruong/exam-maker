@@ -216,6 +216,7 @@ class QuestionsApp:
         self.option_labels: list[ctk.CTkLabel] = []
         self.submitted = False
         self._option_wrap = 700
+        self._explanation_wrap = 700
 
         self.font_scale = load_font_scale()
         self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
@@ -246,6 +247,7 @@ class QuestionsApp:
         #   1–7            : toggle that option
         #   b              : move to / restore from backlog
         #   g              : jump to a specific question
+        #   f / / / Ctrl+f : search questions by text
         #   e              : edit the current question
         for key in ("<Left>", "<KeyPress-a>", "<KeyPress-A>"):
             self.root.bind(key, lambda _e: self.prev())
@@ -261,6 +263,8 @@ class QuestionsApp:
             self.root.bind(key, lambda _e: self.toggle_backlog())
         for key in ("<KeyPress-g>", "<KeyPress-G>"):
             self.root.bind(key, lambda _e: self.jump_dialog())
+        for key in ("<KeyPress-f>", "<KeyPress-F>", "<slash>", "<Control-f>"):
+            self.root.bind(key, lambda _e: self.search_dialog())
         for key in ("<KeyPress-e>", "<KeyPress-E>"):
             self.root.bind(key, lambda _e: self.edit_dialog())
         for n in range(1, 8):
@@ -312,6 +316,14 @@ class QuestionsApp:
             font=self.switch_font,
             command=self.add_dialog,
         ).pack(side="right")
+
+        ctk.CTkButton(
+            top, text="Search", width=90, corner_radius=8,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.search_dialog,
+        ).pack(side="right", padx=8)
 
         ctk.CTkSwitch(
             top, text="Shuffle", variable=self.shuffled,
@@ -431,12 +443,17 @@ class QuestionsApp:
         )
         self.move_btn.pack(side="right")
 
-        # Explanation card
+        # Explanation card — a wrapping label that grows to fit its text, so the
+        # whole window scrolls if the explanation is long (no inner scrollbar).
         ec = card(scroll)
-        ec.pack(fill="both", expand=True, pady=6)
+        ec.pack(fill="x", pady=6)
         section_label(ec, "Explanation", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
-        self.explanation_text = readonly_textbox(ec, height=220, font=self.body_font)
-        self.explanation_text.pack(fill="both", expand=True, padx=16, pady=(0, 12))
+        self.explanation_label = ctk.CTkLabel(
+            ec, text="", font=self.body_font, text_color=P["text"],
+            justify="left", anchor="w", wraplength=self._explanation_wrap,
+        )
+        self.explanation_label.pack(fill="x", padx=16, pady=(0, 12))
+        ec.bind("<Configure>", self._on_explanation_resize)
 
     # ---- data ----
 
@@ -473,7 +490,7 @@ class QuestionsApp:
             self.current = None
             set_text(self.scenario_text, "")
             set_text(self.question_text, "")
-            set_text(self.explanation_text, "")
+            self.explanation_label.configure(text="")
             return
 
         path = self.items[self.index]
@@ -481,7 +498,7 @@ class QuestionsApp:
         self.title_var.set(f"{path.name}      {self.index + 1} of {len(self.items)}")
         set_text(self.scenario_text, self.current["scenario"])
         set_text(self.question_text, self.current["question"])
-        set_text(self.explanation_text, "")
+        self.explanation_label.configure(text="")
 
         for i, opt in enumerate(self.current["options"], 1):
             var = ctk.BooleanVar(value=False)
@@ -536,7 +553,7 @@ class QuestionsApp:
                 lbl.configure(text=f"✗  {i}.  {text}   (wrong)", text_color=P["bad"])
             else:
                 lbl.configure(text_color=P["muted"])
-        set_text(self.explanation_text, self.current["explanation"])
+        self.explanation_label.configure(text=self.current["explanation"])
 
     def _toggle_option(self, i: int) -> None:
         if self.submitted or i < 1 or i > len(self.check_vars):
@@ -558,6 +575,13 @@ class QuestionsApp:
         for lbl in self.option_labels:
             lbl.configure(wraplength=wrap)
 
+    def _on_explanation_resize(self, event) -> None:
+        wrap = max(200, event.width - 32)
+        if wrap == self._explanation_wrap:
+            return
+        self._explanation_wrap = wrap
+        self.explanation_label.configure(wraplength=wrap)
+
     def jump_dialog(self) -> None:
         if not self.items:
             return
@@ -568,6 +592,18 @@ class QuestionsApp:
             return
         self.index = max(0, min(len(self.items) - 1, n - 1))
         self.render()
+
+    def search_dialog(self) -> None:
+        if not self.items:
+            return
+        SearchDialog(self.root, self.items, self._jump_to_path)
+
+    def _jump_to_path(self, path: Path) -> None:
+        for i, p in enumerate(self.items):
+            if p == path:
+                self.index = i
+                self.render()
+                return
 
     def next(self) -> None:
         if not self.items:
@@ -613,6 +649,7 @@ class QuestionsApp:
             ("Space / Enter", "Submit"),
             ("1 – 7", "Toggle that option"),
             ("G", "Jump to a question"),
+            ("F / / / Ctrl+F", "Search questions by text"),
             ("E", "Edit current question"),
             ("B", "Move to / restore from backlog"),
             ("Ctrl + N", "Add a new question"),
@@ -725,6 +762,7 @@ class AddQuestionDialog:
         # focused field).
         self.top.bind("<Control-s>", lambda _e: self._save())
         self.top.bind("<Escape>", lambda _e: self.top.destroy())
+        self.top.bind("<Control-w>", lambda _e: self.top.destroy())
 
     def _save(self) -> None:
         scenario = self.scenario.get("1.0", "end").strip()
@@ -751,6 +789,106 @@ class AddQuestionDialog:
 
         self.on_save(scenario, question, options, correct, explanation)
         self.top.destroy()
+
+
+class SearchDialog:
+    """Live text search over the current question set.
+
+    Matches against scenario, question, options and explanation. Clicking a
+    result (or pressing Enter to open the first match) jumps to that question.
+    """
+
+    def __init__(self, parent, items: list[Path], on_go) -> None:
+        self.on_go = on_go
+        self.records: list[tuple[Path, list[tuple[str, str]]]] = []
+        for p in items:
+            try:
+                d = parse_md(p)
+            except OSError:
+                continue
+            fields = [
+                ("Scenario", d["scenario"]),
+                ("Question", d["question"]),
+                ("Options", "   •   ".join(d["options"])),
+                ("Explanation", d["explanation"]),
+            ]
+            self.records.append((p, fields))
+
+        self.top = ctk.CTkToplevel(parent)
+        self.top.title("Search questions")
+        self.top.geometry("680x560")
+        self.top.configure(fg_color=P["bg"])
+        self.top.transient(parent)
+        self.top.after(50, self.top.grab_set)
+
+        self.entry = ctk.CTkEntry(
+            self.top,
+            placeholder_text="Search text in scenario, question, options, explanation…",
+            fg_color=P["surface"], border_color=P["border"], text_color=P["text"],
+        )
+        self.entry.pack(fill="x", padx=16, pady=(16, 8))
+        self.entry.focus_set()
+        self.entry.bind("<KeyRelease>", lambda _e: self._refresh())
+        self.entry.bind("<Return>", lambda _e: self._open_first())
+        self.entry.bind("<Escape>", lambda _e: self.top.destroy())
+
+        self.count_var = ctk.StringVar(value="")
+        ctk.CTkLabel(self.top, textvariable=self.count_var, text_color=P["muted"],
+                     anchor="w").pack(fill="x", padx=16)
+
+        self.results = ctk.CTkScrollableFrame(self.top, fg_color=P["bg"])
+        self.results.pack(fill="both", expand=True, padx=16, pady=(4, 16))
+
+        self._matches: list[Path] = []
+        self._refresh()
+
+    @staticmethod
+    def _snippet(fields: list[tuple[str, str]], query: str) -> tuple[str, str] | None:
+        for name, text in fields:
+            pos = text.lower().find(query)
+            if pos == -1:
+                continue
+            start = max(0, pos - 30)
+            end = min(len(text), pos + len(query) + 50)
+            snippet = text[start:end].replace("\n", " ").strip()
+            if start > 0:
+                snippet = "…" + snippet
+            if end < len(text):
+                snippet = snippet + "…"
+            return name, snippet
+        return None
+
+    def _refresh(self) -> None:
+        for w in self.results.winfo_children():
+            w.destroy()
+        self._matches = []
+        query = self.entry.get().strip().lower()
+        if not query:
+            self.count_var.set(f"{len(self.records)} questions — type to search")
+            return
+        for p, fields in self.records:
+            hit = self._snippet(fields, query)
+            if hit is None:
+                continue
+            self._matches.append(p)
+            name, snippet = hit
+            ctk.CTkButton(
+                self.results, anchor="w", corner_radius=8, height=44,
+                fg_color=P["surface"], hover_color=P["soft"],
+                text_color=P["text"], border_width=1, border_color=P["border"],
+                text=f"{p.name}   ·   {name}: {snippet}",
+                command=lambda pp=p: self._go(pp),
+            ).pack(fill="x", pady=3)
+        n = len(self._matches)
+        self.count_var.set(f"{n} match{'es' if n != 1 else ''}")
+
+    def _open_first(self) -> None:
+        if self._matches:
+            self._go(self._matches[0])
+
+    def _go(self, path: Path) -> None:
+        self.top.destroy()
+        self.on_go(path)
 
 
 class JumpDialog:
