@@ -53,6 +53,15 @@ From the raw paste, build these fields:
      verbatim** — only strip the wrapper, don't paraphrase or re-summarize the
      reason. If the user supplies preferred wording for a line, use it exactly.
 
+  **Use acronyms in the explanation.** Define a term once with its acronym in
+  parentheses on first mention, then use the acronym everywhere after — e.g.
+  first "Local Secondary Index (LSI)", then "LSI"; "Global Secondary Index (GSI)"
+  then "GSI". This is one of the few edits to make to the otherwise-verbatim
+  prose: collapse repeated long forms ("Local Secondary Index" → "LSI") into the
+  acronym after it's been introduced. Common ones: LSI, GSI. The scenario,
+  question, and option text stay verbatim — acronym substitution applies to the
+  explanation only.
+
 ### Boilerplate to strip
 
 - `Hence, the correct answer is:` / `Hence, the correct answers are:` and the
@@ -65,10 +74,11 @@ From the raw paste, build these fields:
 
 After building the fields, write them as JSON (`scenario`, `question`,
 `options`, `correct`, `explanation`) and **preview with the driver — it renders
-the exact `.md` but writes nothing:**
+the exact `.md` but writes nothing.** Scratch files go in `/tmp` (reads/writes
+there are pre-approved, so they never prompt):
 
 ```bash
-python3 .claude/skills/add-question/preview.py < question.json
+python3 .claude/skills/add-question/preview.py < /tmp/question.json > /tmp/adjusted.md
 ```
 
 The driver imports `add_question.render`, so the preview is **byte-for-byte what
@@ -81,10 +91,19 @@ echo '{"question":"Q?","options":["a","b"],"correct":[9]}' | python3 .claude/ski
 # error: 'correct' indices must be between 1 and 2
 ```
 
-**Show the user the preview AND a short "Changes from your source" list** — e.g.
-"removed the `Hence, the correct answer is:` block", "mapped the three
-`The option that says…` paragraphs to options 2/3/4", "moved the AWS Config
-rationale to the top". This is the mandatory approval gate.
+**Always open the original and adjusted side by side in VS Code.** Write the raw
+pasted source verbatim to `/tmp/original.md`, write the rendered preview to
+`/tmp/adjusted.md` (the redirect above), then launch the diff:
+
+```bash
+code --diff /tmp/original.md /tmp/adjusted.md
+```
+
+**Then, in chat, show the user the preview AND a short "Changes from your source"
+list** — e.g. "removed the `Hence, the correct answer is:` block", "mapped the
+three `The option that says…` paragraphs to options 2/3/4", "moved the AWS Config
+rationale to the top". The VS Code diff plus this list is the mandatory approval
+gate.
 
 ## Append (only after approval)
 
@@ -92,7 +111,7 @@ Pipe the **same JSON** to the real CLI from the project root. Use a heredoc to
 keep newlines in multi-line fields intact:
 
 ```bash
-python3 add_question.py < question.json
+python3 add_question.py < /tmp/question.json
 ```
 
 It prints the new file path (e.g. `data/questions/active/q-0051.md`). Surface it
@@ -102,8 +121,9 @@ to the user. On validation failure it prints `error: …` to stderr and exits `2
 ## Hard rules
 
 - **Preview before write, every time.** Never call `add_question.py` until the
-  user has seen the preview and approved. "Any changes vs the original → show me
-  first."
+  user has seen the preview and approved. Always open the side-by-side
+  `code --diff /tmp/original.md /tmp/adjusted.md` so they can compare the raw
+  source against the cleaned `.md`. "Any changes vs the original → show me first."
 - **One question per invocation.** Many questions → `./run.sh import`.
 - **Append only.** Never modify an existing `q-NNNN.md`.
 - **Don't invent a question line** when the source has none (scenario-only is
