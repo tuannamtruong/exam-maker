@@ -213,7 +213,9 @@ class QuestionsApp:
         self.current: dict | None = None
         self.checkboxes: list[ctk.CTkCheckBox] = []
         self.check_vars: list[ctk.BooleanVar] = []
+        self.option_labels: list[ctk.CTkLabel] = []
         self.submitted = False
+        self._option_wrap = 700
 
         self.font_scale = load_font_scale()
         self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
@@ -233,6 +235,26 @@ class QuestionsApp:
         self.root.bind_all("<Control-equal>", lambda _e: self._bump_font(0.1))
         self.root.bind_all("<Control-minus>", lambda _e: self._bump_font(-0.1))
         self.root.bind_all("<Control-0>", lambda _e: self._reset_font())
+
+        # Hotkeys (bound to the main window so the Add / Jump dialogs — separate
+        # Toplevels — are unaffected while typing in them).
+        #   a / d / arrows : scroll the content up & down (no horizontal scroll)
+        #   space / Return : submit
+        #   1–7            : toggle that option
+        #   b              : move to / restore from backlog
+        #   g              : jump to a specific question
+        for key in ("<KeyPress-a>", "<KeyPress-A>", "<Up>", "<Left>"):
+            self.root.bind(key, lambda _e: self._scroll(-3))
+        for key in ("<KeyPress-d>", "<KeyPress-D>", "<Down>", "<Right>"):
+            self.root.bind(key, lambda _e: self._scroll(3))
+        for key in ("<space>", "<Return>"):
+            self.root.bind(key, lambda _e: self.submit())
+        for key in ("<KeyPress-b>", "<KeyPress-B>"):
+            self.root.bind(key, lambda _e: self.toggle_backlog())
+        for key in ("<KeyPress-g>", "<KeyPress-G>"):
+            self.root.bind(key, lambda _e: self.jump_dialog())
+        for n in range(1, 8):
+            self.root.bind(str(n), lambda _e, i=n: self._toggle_option(i))
 
     def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
         f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
@@ -309,9 +331,10 @@ class QuestionsApp:
             command=lambda: self._bump_font(-0.1),
         ).pack(side="right", padx=(0, 4))
 
-        # Scrollable content
-        scroll = ctk.CTkScrollableFrame(self.root, fg_color=P["bg"])
-        scroll.pack(fill="both", expand=True, padx=16, pady=8)
+        # Scrollable content (vertical only)
+        self.scroll = ctk.CTkScrollableFrame(self.root, fg_color=P["bg"])
+        self.scroll.pack(fill="both", expand=True, padx=16, pady=8)
+        scroll = self.scroll
 
         # Scenario card
         sc = card(scroll)
@@ -333,6 +356,7 @@ class QuestionsApp:
         section_label(oc, "Options", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
         self.options_frame = ctk.CTkFrame(oc, fg_color="transparent")
         self.options_frame.pack(fill="x", padx=16, pady=(0, 12))
+        self.options_frame.bind("<Configure>", self._on_options_resize)
 
         # Action buttons row
         actions = ctk.CTkFrame(scroll, fg_color="transparent")
@@ -362,6 +386,14 @@ class QuestionsApp:
             font=self.switch_font,
             command=self.next,
         ).pack(side="left", padx=0)
+
+        ctk.CTkButton(
+            actions, text="Jump  (G)", width=100, height=40, corner_radius=10,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.jump_dialog,
+        ).pack(side="left", padx=8)
 
         self.move_btn = ctk.CTkButton(
             actions, text="Move to Backlog", width=160, height=40, corner_radius=10,
@@ -398,10 +430,14 @@ class QuestionsApp:
         self.render()
 
     def render(self) -> None:
+        # Keep keyboard focus on the window (not a clicked checkbox/button) so
+        # <space> only triggers Submit, never a focused widget as well.
+        self.root.focus_set()
         for w in self.options_frame.winfo_children():
             w.destroy()
         self.checkboxes = []
         self.check_vars = []
+        self.option_labels = []
         self.submitted = False
         self.submit_btn.configure(state="normal", fg_color=P["accent"])
 
@@ -423,20 +459,35 @@ class QuestionsApp:
 
         for i, opt in enumerate(self.current["options"], 1):
             var = ctk.BooleanVar(value=False)
+            row = ctk.CTkFrame(self.options_frame, fg_color="transparent")
+            row.pack(anchor="w", fill="x", pady=4)
             cb = ctk.CTkCheckBox(
-                self.options_frame,
-                text=f"{i}.  {opt}",
+                row,
+                text="",
                 variable=var,
+                width=24,
                 fg_color=P["primary"],
                 hover_color=P["primary_hv"],
-                text_color=P["text"],
-                font=self.option_font,
                 checkbox_width=20, checkbox_height=20,
                 corner_radius=4,
+                command=lambda: self.root.focus_set(),
             )
-            cb.pack(anchor="w", fill="x", pady=4)
+            cb.pack(side="left", anchor="n", pady=(1, 0))
+            lbl = ctk.CTkLabel(
+                row,
+                text=f"{i}.  {opt}",
+                font=self.option_font,
+                text_color=P["text"],
+                justify="left",
+                anchor="w",
+                wraplength=self._option_wrap,
+            )
+            lbl.pack(side="left", fill="x", expand=True, padx=(6, 0))
+            # clicking the text toggles the option too
+            lbl.bind("<Button-1>", lambda _e, v=var: (v.set(not v.get()), self.root.focus_set()))
             self.checkboxes.append(cb)
             self.check_vars.append(var)
+            self.option_labels.append(lbl)
 
     # ---- actions ----
 
@@ -446,19 +497,51 @@ class QuestionsApp:
         self.submitted = True
         self.submit_btn.configure(state="disabled", fg_color=P["muted"])
         correct_set = set(self.current["correct"])
-        for i, (cb, var) in enumerate(zip(self.checkboxes, self.check_vars), 1):
+        for i, var in enumerate(self.check_vars, 1):
             picked = var.get()
             is_correct = i in correct_set
             text = self.current["options"][i - 1]
+            lbl = self.option_labels[i - 1]
             if is_correct and picked:
-                cb.configure(text=f"✓  {i}.  {text}   (correct)", text_color=P["ok"])
+                lbl.configure(text=f"✓  {i}.  {text}   (correct)", text_color=P["ok"])
             elif is_correct and not picked:
-                cb.configure(text=f"●  {i}.  {text}   (was correct)", text_color=P["accent_hv"])
+                lbl.configure(text=f"●  {i}.  {text}   (was correct)", text_color=P["accent_hv"])
             elif picked and not is_correct:
-                cb.configure(text=f"✗  {i}.  {text}   (wrong)", text_color=P["bad"])
+                lbl.configure(text=f"✗  {i}.  {text}   (wrong)", text_color=P["bad"])
             else:
-                cb.configure(text_color=P["muted"])
+                lbl.configure(text_color=P["muted"])
         set_text(self.explanation_text, self.current["explanation"])
+
+    def _toggle_option(self, i: int) -> None:
+        if self.submitted or i < 1 or i > len(self.check_vars):
+            return
+        var = self.check_vars[i - 1]
+        var.set(not var.get())
+
+    def _scroll(self, units: int) -> None:
+        try:
+            self.scroll._parent_canvas.yview_scroll(units, "units")
+        except Exception:
+            pass
+
+    def _on_options_resize(self, event) -> None:
+        wrap = max(200, event.width - 40)
+        if wrap == self._option_wrap:
+            return
+        self._option_wrap = wrap
+        for lbl in self.option_labels:
+            lbl.configure(wraplength=wrap)
+
+    def jump_dialog(self) -> None:
+        if not self.items:
+            return
+        JumpDialog(self.root, len(self.items), self.index + 1, "question", self._jump_to)
+
+    def _jump_to(self, n: int) -> None:
+        if not self.items:
+            return
+        self.index = max(0, min(len(self.items) - 1, n - 1))
+        self.render()
 
     def next(self) -> None:
         if not self.items:
@@ -582,6 +665,43 @@ class AddQuestionDialog:
             return
 
         self.on_save(scenario, question, options, correct, explanation)
+        self.top.destroy()
+
+
+class JumpDialog:
+    def __init__(self, parent, count: int, current: int, noun: str, on_go) -> None:
+        self.on_go = on_go
+        self.top = ctk.CTkToplevel(parent)
+        self.top.title(f"Jump to {noun}")
+        self.top.geometry("320x160")
+        self.top.configure(fg_color=P["bg"])
+        self.top.transient(parent)
+        self.top.after(50, self.top.grab_set)
+
+        ctk.CTkLabel(self.top, text=f"Go to {noun} #  (1 – {count})",
+                     text_color=P["text"]).pack(padx=16, pady=(20, 6))
+        self.entry = ctk.CTkEntry(self.top, justify="center", fg_color=P["surface"],
+                                  border_color=P["border"], text_color=P["text"])
+        self.entry.insert(0, str(current))
+        self.entry.pack(padx=16, pady=4)
+        self.entry.select_range(0, "end")
+        self.entry.focus_set()
+        self.entry.bind("<Return>", lambda _e: self._go())
+        self.entry.bind("<Escape>", lambda _e: self.top.destroy())
+
+        btns = ctk.CTkFrame(self.top, fg_color="transparent")
+        btns.pack(pady=12)
+        ctk.CTkButton(btns, text="Cancel", width=80, corner_radius=8, fg_color=P["soft"],
+                      hover_color=P["border"], text_color=P["primary"],
+                      command=self.top.destroy).pack(side="right", padx=6)
+        ctk.CTkButton(btns, text="Go", width=80, corner_radius=8, fg_color=P["primary"],
+                      hover_color=P["primary_hv"], text_color="white",
+                      command=self._go).pack(side="right")
+
+    def _go(self) -> None:
+        raw = self.entry.get().strip()
+        if raw.isdigit():
+            self.on_go(int(raw))
         self.top.destroy()
 
 

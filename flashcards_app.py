@@ -161,6 +161,18 @@ class FlashcardsApp:
         self.root.bind_all("<Control-minus>", lambda _e: self._bump_font(-0.1))
         self.root.bind_all("<Control-0>", lambda _e: self._reset_font())
 
+        # Navigation / flip hotkeys (bound to the main window so the Add
+        # dialog — a separate Toplevel — is unaffected while typing).
+        self.root.bind("<space>", lambda _e: self.flip())
+        for key in ("<Left>", "<KeyPress-a>", "<KeyPress-A>"):
+            self.root.bind(key, lambda _e: self.prev())
+        for key in ("<Right>", "<KeyPress-d>", "<KeyPress-D>"):
+            self.root.bind(key, lambda _e: self.next())
+        for key in ("<KeyPress-b>", "<KeyPress-B>"):
+            self.root.bind(key, lambda _e: self.toggle_backlog())
+        for key in ("<KeyPress-g>", "<KeyPress-G>"):
+            self.root.bind(key, lambda _e: self.jump_dialog())
+
     def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
         f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
         self._fonts.append((f, size, weight))
@@ -306,6 +318,14 @@ class FlashcardsApp:
             command=self.next,
         ).pack(side="left")
 
+        ctk.CTkButton(
+            btns, text="Jump  (G)", width=100, height=40, corner_radius=10,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.jump_dialog,
+        ).pack(side="left", padx=8)
+
         self.move_btn = ctk.CTkButton(
             btns, text="Move to Backlog", width=160, height=40, corner_radius=10,
             fg_color="transparent", hover_color=P["soft"],
@@ -332,6 +352,9 @@ class FlashcardsApp:
         self.render()
 
     def render(self) -> None:
+        # Keep keyboard focus on the window (not on a clicked button) so that
+        # <space> only triggers our flip bind, never a focused button as well.
+        self.root.focus_set()
         self.flipped = False
         self.card.configure(fg_color=P["card_front"])
         mode = "backlog" if self.show_backlog.get() else "active"
@@ -359,6 +382,9 @@ class FlashcardsApp:
     def flip(self) -> None:
         if not self.current:
             return
+        # A mouse click on the Flip button leaves it focused; reclaim focus so a
+        # subsequent <space> flips once (bind only) rather than twice.
+        self.root.focus_set()
         self.flipped = not self.flipped
         if self.flipped:
             self.card.configure(fg_color=P["card_back"])
@@ -395,6 +421,17 @@ class FlashcardsApp:
         if self.items:
             self.index = min(prev_index, len(self.items) - 1)
             self.render()
+
+    def jump_dialog(self) -> None:
+        if not self.items:
+            return
+        JumpDialog(self.root, len(self.items), self.index + 1, "card", self._jump_to)
+
+    def _jump_to(self, n: int) -> None:
+        if not self.items:
+            return
+        self.index = max(0, min(len(self.items) - 1, n - 1))
+        self.render()
 
     def add_dialog(self) -> None:
         AddFlashcardDialog(self.root, on_save=self._save_new)
@@ -469,6 +506,43 @@ class AddFlashcardDialog:
             messagebox.showerror("Validation", "Front is required.", parent=self.top)
             return
         self.on_save(category, front, back)
+        self.top.destroy()
+
+
+class JumpDialog:
+    def __init__(self, parent, count: int, current: int, noun: str, on_go) -> None:
+        self.on_go = on_go
+        self.top = ctk.CTkToplevel(parent)
+        self.top.title(f"Jump to {noun}")
+        self.top.geometry("320x160")
+        self.top.configure(fg_color=P["bg"])
+        self.top.transient(parent)
+        self.top.after(50, self.top.grab_set)
+
+        ctk.CTkLabel(self.top, text=f"Go to {noun} #  (1 – {count})",
+                     text_color=P["text"]).pack(padx=16, pady=(20, 6))
+        self.entry = ctk.CTkEntry(self.top, justify="center", fg_color=P["surface"],
+                                  border_color=P["border"], text_color=P["text"])
+        self.entry.insert(0, str(current))
+        self.entry.pack(padx=16, pady=4)
+        self.entry.select_range(0, "end")
+        self.entry.focus_set()
+        self.entry.bind("<Return>", lambda _e: self._go())
+        self.entry.bind("<Escape>", lambda _e: self.top.destroy())
+
+        btns = ctk.CTkFrame(self.top, fg_color="transparent")
+        btns.pack(pady=12)
+        ctk.CTkButton(btns, text="Cancel", width=80, corner_radius=8, fg_color=P["soft"],
+                      hover_color=P["border"], text_color=P["primary"],
+                      command=self.top.destroy).pack(side="right", padx=6)
+        ctk.CTkButton(btns, text="Go", width=80, corner_radius=8, fg_color=P["primary"],
+                      hover_color=P["primary_hv"], text_color="white",
+                      command=self._go).pack(side="right")
+
+    def _go(self) -> None:
+        raw = self.entry.get().strip()
+        if raw.isdigit():
+            self.on_go(int(raw))
         self.top.destroy()
 
 
