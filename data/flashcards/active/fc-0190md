@@ -1,0 +1,9 @@
+---
+category: Term
+---
+
+# Front
+X-Ray
+
+# Back
+distributed tracing service. It collects data about application requests and helps you analyze request paths, latency, errors, and downstream calls to services, databases, microservices, and APIs.
