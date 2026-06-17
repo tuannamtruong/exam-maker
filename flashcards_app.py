@@ -532,6 +532,7 @@ class AddFlashcardDialog:
         # focused field).
         self.top.bind("<Control-s>", lambda _e: self._save())
         self.top.bind("<Escape>", lambda _e: self.top.destroy())
+        self.top.bind("<Control-w>", lambda _e: self.top.destroy())
 
     def _save(self) -> None:
         category = self.category.get().strip()
