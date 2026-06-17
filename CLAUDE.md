@@ -76,6 +76,12 @@ optional prose explaining the correct answer(s)
 
 - `correct` is a comma-separated list of **1-based** option indices. May contain one or several.
 - `# Scenario` and `# Explanation` are optional.
+- `# Question` is also optional. A **scenario-only** item (a `# Scenario` plus
+  `# Options`, with no `# Question`) is normal and valid — the scenario itself
+  poses the question. This is common in imported material where the prompt is
+  the scenario. Do **not** invent or synthesize a question line when the source
+  has none; just leave `# Question` out. At least one of `# Scenario` or
+  `# Question` must be present.
 - Option count must be 2–7.
 
 ## Data format — flashcards

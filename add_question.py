@@ -3,11 +3,14 @@
 Reads JSON from stdin:
     {
       "scenario":    "optional context paragraph",
-      "question":    "required question line",
+      "question":    "the question line — optional if a scenario is given",
       "options":     ["...", "...", ...],   # 2-7 strings
       "correct":     [1, 3],                # 1-based indices into options
       "explanation": "optional"
     }
+
+A scenario-only item (no separate question line) is valid: the scenario itself
+poses the question. At least one of 'scenario' or 'question' must be present.
 
 Prints the path of the newly created markdown file.
 
@@ -44,7 +47,8 @@ def render(scenario: str, question: str, options: list[str], correct: list[int],
     parts = ["---", f"correct: {','.join(str(i) for i in correct)}", "---", ""]
     if scenario:
         parts += ["# Scenario", scenario.strip(), ""]
-    parts += ["# Question", question.strip(), ""]
+    if question:
+        parts += ["# Question", question.strip(), ""]
     parts += ["# Options"] + [f"{i}. {opt.strip()}" for i, opt in enumerate(options, 1)] + [""]
     if explanation:
         parts += ["# Explanation", explanation.strip(), ""]
@@ -66,8 +70,8 @@ def main() -> None:
     scenario = (data.get("scenario") or "").strip()
     explanation = (data.get("explanation") or "").strip()
 
-    if not question:
-        fail("'question' is required")
+    if not question and not scenario:
+        fail("provide a 'question', a 'scenario', or both")
     if not isinstance(options, list) or not all(isinstance(o, str) for o in options):
         fail("'options' must be a list of strings")
     if not (2 <= len(options) <= 7):
