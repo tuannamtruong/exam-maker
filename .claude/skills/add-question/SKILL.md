@@ -39,12 +39,19 @@ From the raw paste, build these fields:
   to the options. For "Select TWO" there are several.
 - **explanation** — assembled in this exact order:
   1. **Correct-answer rationale on top** — the prose explaining *why the right
-     answer is right* (the paragraphs before "Hence, the correct answer…"),
-     condensed to a tight paragraph. Then a blank line.
+     answer is right* (the paragraphs before "Hence, the correct answer…").
+     **Keep the source's wording and nuance — do not condense to a tight
+     paragraph.** Preserve the source's multi-paragraph prose largely verbatim;
+     only drop genuinely tangential illustrations (e.g. a generic "Suppose an
+     application…" example about an unrelated table) and dead phrases like "just
+     as shown below" that point at a missing screenshot. When in doubt, keep it.
+     Then a blank line.
   2. **One numbered line per wrong option**, `N. <reason>`, where `N` is that
      option's number. The source writes these as
      *"The option that says: `<full option text>` is incorrect because `<reason>`."*
-     Match the quoted option text to its number and keep only `<reason>`.
+     Match the quoted option text to its number and **keep `<reason>` close to
+     verbatim** — only strip the wrapper, don't paraphrase or re-summarize the
+     reason. If the user supplies preferred wording for a line, use it exactly.
 
 ### Boilerplate to strip
 
@@ -114,7 +121,8 @@ to the user. On validation failure it prints `error: …` to stderr and exits `2
 - Wrong-option explanations in the source are **out of order** and interleaved
   with the correct-answer rationale — sort them by option number for the output.
 - Keep option text verbatim; the renderer `.strip()`s each one but does not
-  reword. Only the explanation is condensed.
+  reword. The explanation is *lightly* edited at most — strip wrappers and
+  tangents, but keep the source's wording and nuance; don't rewrite it.
 - `preview.py` finds the project root as `parents[3]` of its own path. It only
   works while it lives at `.claude/skills/add-question/preview.py`.
 
