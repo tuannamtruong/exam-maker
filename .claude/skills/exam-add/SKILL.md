@@ -39,7 +39,11 @@ invoke them with `python3` (not the venv path — the CLIs only use stdlib).
    follow-ups (one message, batched) instead of guessing:
 
    - `scenario` (optional) — context paragraph(s) before the question
-   - `question` (required) — the question line itself
+   - `question` (optional) — the question line itself. It is **normal** for an
+     item to have no question line and just a scenario — the scenario poses the
+     question. When the source has no explicit question, leave `question` out;
+     do **not** invent or synthesize one. (At least one of `scenario` or
+     `question` must be present.)
    - `options` (required) — list of 2 to 7 answer strings
    - `correct` (required) — list of **1-based** option indices, e.g. `[1, 3]`.
      For a single-answer question this is a one-element list, e.g. `[3]`.
