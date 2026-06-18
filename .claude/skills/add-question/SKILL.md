@@ -28,12 +28,14 @@ to use the app's Edit dialog), or a long document with many questions (that is
 
 From the raw paste, build these fields:
 
-- **scenario** — the context paragraph(s). Keep verbatim.
+- **scenario** — the context paragraph(s). Keep verbatim, except collapse the
+  pre-approved terms below (e.g. "Auto Scaling Group" → "ASG").
 - **question** — the question line (e.g. "Which … (Select TWO.)"). If the source
   has *no* question line and the scenario poses the question, leave it out — do
   **not** invent one.
 - **options** — the answer choices, in source order, as plain strings (no `1.`
-  numbering — the renderer numbers them).
+  numbering — the renderer numbers them). Verbatim, except collapse the
+  pre-approved terms below.
 - **correct** — 1-based indices. Derive from the source's
   `"Hence, the correct answer(s) is/are: <text>"` line by matching that text back
   to the options. For "Select TWO" there are several.
@@ -60,15 +62,26 @@ From the raw paste, build these fields:
   prose: collapse repeated long forms ("Local Secondary Index" → "LSI") into the
   acronym after it's been introduced.
 
-  **Pre-approved terms — always collapse, every occurrence:** ALB, ELB, CA
-  (certificate authority), ACM (AWS Certificate Manager), ASG (Auto Scaling
-  Group), NLB (Network Load Balancer), IaC (Infrastructure as Code), LSI, GSI.
+  **Pre-approved terms — always collapse, every occurrence, in scenario,
+  question, options, AND explanation:** ALB, ELB, CA (certificate authority),
+  ACM (AWS Certificate Manager), ASG (Auto Scaling Group), NLB (Network Load
+  Balancer), IaC (Infrastructure as Code), IoT (Internet of Things), LSI, GSI.
   These are so familiar you don't need to spell them out at all — use the acronym
-  throughout the explanation, including the first mention (no need to write the
-  long form even once). Also strip redundant trailing nouns the source bolts onto
-  an acronym: "ELB load balancer" → "ELB", "ALB load balancer" → "ALB". The
-  scenario, question, and option text stay verbatim — acronym substitution
-  applies to the explanation only.
+  everywhere, including the first mention (no need to write the long form even
+  once). Also strip redundant trailing nouns the source bolts onto an acronym:
+  "ELB load balancer" → "ELB", "ALB load balancer" → "ALB". This is the **one**
+  exception to keeping the scenario, question, and option text verbatim —
+  collapse these specific pre-approved terms there too. The general
+  define-once-then-acronym rule above still applies to the explanation only;
+  everything else in the scenario, question, and options stays verbatim.
+
+  **Strip "AWS"/"Amazon" service prefixes — every occurrence, everywhere
+  (scenario, question, options, AND explanation):** drop the leading `AWS ` or
+  `Amazon ` from any AWS service name and keep the bare service name — "AWS
+  CodePipeline" → "CodePipeline", "Amazon CloudWatch" → "CloudWatch", "AWS
+  Lambda" → "Lambda", "Amazon S3" → "S3", "AWS CodeBuild" → "CodeBuild". Apply to
+  all AWS services. This is another exception to the verbatim rule — trim the
+  prefix in the scenario, question, and options too.
 
 ### Boilerplate to strip
 
