@@ -172,6 +172,8 @@ class FlashcardsApp:
             self.root.bind(key, lambda _e: self.toggle_backlog())
         for key in ("<KeyPress-g>", "<KeyPress-G>"):
             self.root.bind(key, lambda _e: self.jump_dialog())
+        for key in ("<KeyPress-f>", "<KeyPress-F>", "<slash>", "<Control-f>"):
+            self.root.bind(key, lambda _e: self.search_dialog())
         for key in ("<KeyPress-e>", "<KeyPress-E>"):
             self.root.bind(key, lambda _e: self.edit_dialog())
 
@@ -332,6 +334,14 @@ class FlashcardsApp:
         ).pack(side="left", padx=8)
 
         ctk.CTkButton(
+            btns, text="Search", width=100, height=40, corner_radius=10,
+            fg_color=P["soft"], hover_color=P["border"],
+            text_color=P["primary"],
+            font=self.switch_font,
+            command=self.search_dialog,
+        ).pack(side="left", padx=(0, 8))
+
+        ctk.CTkButton(
             btns, text="Edit", width=100, height=40, corner_radius=10,
             fg_color=P["soft"], hover_color=P["border"],
             text_color=P["primary"],
@@ -446,6 +456,18 @@ class FlashcardsApp:
         self.index = max(0, min(len(self.items) - 1, n - 1))
         self.render()
 
+    def search_dialog(self) -> None:
+        if not self.items:
+            return
+        SearchDialog(self.root, self.items, self._jump_to_path)
+
+    def _jump_to_path(self, path: Path) -> None:
+        for i, p in enumerate(self.items):
+            if p == path:
+                self.index = i
+                self.render()
+                break
+
     def add_dialog(self) -> None:
         AddFlashcardDialog(self.root, on_save=self._save_new)
 
@@ -543,6 +565,105 @@ class AddFlashcardDialog:
             return
         self.on_save(category, front, back)
         self.top.destroy()
+
+
+class SearchDialog:
+    """Live text search over the current flashcard set.
+
+    Matches against category, front and back. Clicking a result (or pressing
+    Enter to open the first match) jumps to that card.
+    """
+
+    def __init__(self, parent, items: list[Path], on_go) -> None:
+        self.on_go = on_go
+        self.records: list[tuple[Path, list[tuple[str, str]]]] = []
+        for p in items:
+            try:
+                d = parse_md(p)
+            except OSError:
+                continue
+            fields = [
+                ("Category", d["category"]),
+                ("Front", d["front"]),
+                ("Back", d["back"]),
+            ]
+            self.records.append((p, fields))
+
+        self.top = ctk.CTkToplevel(parent)
+        self.top.title("Search flashcards")
+        self.top.geometry("680x560")
+        self.top.configure(fg_color=P["bg"])
+        self.top.transient(parent)
+        self.top.after(50, self.top.grab_set)
+
+        self.entry = ctk.CTkEntry(
+            self.top,
+            placeholder_text="Search text in category, front, back…",
+            fg_color=P["surface"], border_color=P["border"], text_color=P["text"],
+        )
+        self.entry.pack(fill="x", padx=16, pady=(16, 8))
+        self.entry.focus_set()
+        self.entry.bind("<KeyRelease>", lambda _e: self._refresh())
+        self.entry.bind("<Return>", lambda _e: self._open_first())
+        self.entry.bind("<Escape>", lambda _e: self.top.destroy())
+
+        self.count_var = ctk.StringVar(value="")
+        ctk.CTkLabel(self.top, textvariable=self.count_var, text_color=P["muted"],
+                     anchor="w").pack(fill="x", padx=16)
+
+        self.results = ctk.CTkScrollableFrame(self.top, fg_color=P["bg"])
+        self.results.pack(fill="both", expand=True, padx=16, pady=(4, 16))
+
+        self._matches: list[Path] = []
+        self._refresh()
+
+    @staticmethod
+    def _snippet(fields: list[tuple[str, str]], query: str) -> tuple[str, str] | None:
+        for name, text in fields:
+            pos = text.lower().find(query)
+            if pos == -1:
+                continue
+            start = max(0, pos - 30)
+            end = min(len(text), pos + len(query) + 50)
+            snippet = text[start:end].replace("\n", " ").strip()
+            if start > 0:
+                snippet = "…" + snippet
+            if end < len(text):
+                snippet = snippet + "…"
+            return name, snippet
+        return None
+
+    def _refresh(self) -> None:
+        for w in self.results.winfo_children():
+            w.destroy()
+        self._matches = []
+        query = self.entry.get().strip().lower()
+        if not query:
+            self.count_var.set(f"{len(self.records)} cards — type to search")
+            return
+        for p, fields in self.records:
+            hit = self._snippet(fields, query)
+            if hit is None:
+                continue
+            self._matches.append(p)
+            name, snippet = hit
+            ctk.CTkButton(
+                self.results, anchor="w", corner_radius=8, height=44,
+                fg_color=P["surface"], hover_color=P["soft"],
+                text_color=P["text"], border_width=1, border_color=P["border"],
+                text=f"{p.name}   ·   {name}: {snippet}",
+                command=lambda pp=p: self._go(pp),
+            ).pack(fill="x", pady=3)
+        n = len(self._matches)
+        self.count_var.set(f"{n} match{'es' if n != 1 else ''}")
+
+    def _open_first(self) -> None:
+        if self._matches:
+            self._go(self._matches[0])
+
+    def _go(self, path: Path) -> None:
+        self.top.destroy()
+        self.on_go(path)
 
 
 class JumpDialog:
