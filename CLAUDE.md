@@ -4,7 +4,7 @@ Local exam-prep apps. Two separate Tkinter (customtkinter) GUIs over markdown fi
 
 - **Questions app** (`questions_app.py`) — multiple choice, 2–7 options, multi-correct supported. Orange/amber palette.
 - **Flashcards app** (`flashcards_app.py`) — flip-card. Teal/sky palette.
-- **Importer** (`import_data.py`) — one-shot conversion of `questions.txt` / `flashcards.txt` into per-item `.md` files.
+- **Importer** (`import/import_data.py`) — one-shot conversion of `questions.txt` / `flashcards.txt` into per-item `.md` files. All importer-related code and source material lives under `import/`.
 - **Flashcards web app** (`webapp/`) — simplified, read-only PWA port of the flashcards app for Android (flip / nav / shuffle / search / jump, local hide-list "backlog"; no add/edit). `scripts/gen_webapp.py` builds `webapp/cards.json` from the active `.md` files; `./run.sh webapp` regenerates it and serves the folder over the LAN. See `webapp/README.md`.
 
 ## File layout
@@ -17,10 +17,15 @@ exam-maker/
 ├── flashcards_app.py           # GUI
 ├── add_question.py             # CLI: stdin JSON -> append new question .md
 ├── add_flashcard.py            # CLI: stdin JSON -> append new flashcard .md
-├── import_data.py              # one-shot importer
+├── import/                     # one-shot importer + its source material
+│   ├── import_data.py          # one-shot importer (.txt -> .md)
+│   ├── docx_to_text.py         # .docx -> .txt helper for importer input
+│   └── original_questions/     # original .docx source material
 ├── scripts/
 │   ├── stats.py                # active / backlog counts
-│   └── docx_to_text.py         # .docx -> .txt helper for importer input
+│   ├── gen_webapp.py           # build webapp/cards.json from active .md
+│   ├── gen_standalone.py       # inline cards/css/js -> webapp/standalone.html
+│   └── build_standalone.sh     # gen_webapp + gen_standalone
 ├── .claude/skills/exam-add/
 │   └── SKILL.md                # agent skill for "add a question/flashcard..."
 └── data/

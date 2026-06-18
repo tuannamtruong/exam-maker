@@ -1,14 +1,14 @@
 """One-shot importer: questions.txt + flashcards.txt -> per-item markdown files.
 
-Run from the project root:
-    python3 import_data.py
+Run from anywhere:
+    python3 import/import_data.py
 """
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 Q_SRC = ROOT / "questions.txt"
 F_SRC = ROOT / "flashcards.txt"
 Q_OUT = ROOT / "data" / "questions" / "active"

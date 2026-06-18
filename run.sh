@@ -60,7 +60,7 @@ case "$cmd" in
         exec "$PY" flashcards_app.py "$@"
         ;;
     import)
-        exec "$PY" import_data.py "$@"
+        exec "$PY" import/import_data.py "$@"
         ;;
     webapp)
         # Regenerate the card payload, then serve webapp/ over the LAN so the

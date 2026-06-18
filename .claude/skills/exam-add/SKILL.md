@@ -106,7 +106,7 @@ invoke them with `python3` (not the venv path — the CLIs only use stdlib).
 - **No file moves.** Backlog moves are done by the GUI apps, not this skill.
 - **Don't bulk-import.** If the user pastes a long document with many items,
   ask whether to add them one by one or whether they want to re-run
-  `import_data.py` against a fresh `questions.txt` / `flashcards.txt`.
+  `import/import_data.py` against a fresh `questions.txt` / `flashcards.txt`.
 - **No format drift.** The CLI is the single source of formatting; do not
   hand-write `.md` files directly.
 - **Confirm ambiguous correct answers.** If the user pastes options without

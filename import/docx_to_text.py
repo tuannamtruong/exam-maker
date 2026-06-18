@@ -7,12 +7,15 @@ the python-docx dependency, which is handy when prepping source material for the
 exam-maker add CLIs (see .claude/skills/exam-add/SKILL.md).
 
 Usage:
-    python3 scripts/docx_to_text.py path/to/file.docx        # one line per paragraph
-    python3 scripts/docx_to_text.py path/to/file.docx --numbered
+    python3 import/docx_to_text.py path/to/file.docx        # one line per paragraph
+    python3 import/docx_to_text.py path/to/file.docx --numbered
 
-As a library:
-    from scripts.docx_to_text import extract_paragraphs
-    lines = extract_paragraphs("file.docx")
+As a library (the folder name ``import`` is a keyword, so load it by path):
+    import importlib.util, pathlib
+    spec = importlib.util.spec_from_file_location(
+        "docx_to_text", pathlib.Path("import/docx_to_text.py"))
+    mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+    lines = mod.extract_paragraphs("file.docx")
 """
 from __future__ import annotations
 
