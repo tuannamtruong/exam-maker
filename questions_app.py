@@ -217,6 +217,7 @@ class QuestionsApp:
         self.submitted = False
         self._option_wrap = 700
         self._explanation_wrap = 700
+        self._scenario_wrap = 700
 
         self.font_scale = load_font_scale()
         self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
@@ -358,12 +359,17 @@ class QuestionsApp:
         self.scroll.pack(fill="both", expand=True, padx=16, pady=8)
         scroll = self.scroll
 
-        # Scenario card
+        # Scenario card — a wrapping label that grows to fit its text, so the
+        # whole window scrolls if the scenario is long (no fixed height).
         sc = card(scroll)
         sc.pack(fill="x", pady=6)
         section_label(sc, "Scenario", font=self.section_font).pack(anchor="w", padx=16, pady=(12, 4))
-        self.scenario_text = readonly_textbox(sc, height=120, font=self.body_font)
-        self.scenario_text.pack(fill="x", padx=16, pady=(0, 12))
+        self.scenario_label = ctk.CTkLabel(
+            sc, text="", font=self.body_font, text_color=P["text"],
+            justify="left", anchor="w", wraplength=self._scenario_wrap,
+        )
+        self.scenario_label.pack(fill="x", padx=16, pady=(0, 12))
+        sc.bind("<Configure>", self._on_scenario_resize)
 
         # Question card
         qc = card(scroll)
@@ -488,7 +494,7 @@ class QuestionsApp:
         if not self.items:
             self.title_var.set(f"({mode}) — no questions")
             self.current = None
-            set_text(self.scenario_text, "")
+            self.scenario_label.configure(text="")
             set_text(self.question_text, "")
             self.explanation_label.configure(text="")
             return
@@ -496,7 +502,7 @@ class QuestionsApp:
         path = self.items[self.index]
         self.current = parse_md(path)
         self.title_var.set(f"{path.name}      {self.index + 1} of {len(self.items)}")
-        set_text(self.scenario_text, self.current["scenario"])
+        self.scenario_label.configure(text=self.current["scenario"])
         set_text(self.question_text, self.current["question"])
         self.explanation_label.configure(text="")
 
@@ -581,6 +587,13 @@ class QuestionsApp:
             return
         self._explanation_wrap = wrap
         self.explanation_label.configure(wraplength=wrap)
+
+    def _on_scenario_resize(self, event) -> None:
+        wrap = max(200, event.width - 32)
+        if wrap == self._scenario_wrap:
+            return
+        self._scenario_wrap = wrap
+        self.scenario_label.configure(wraplength=wrap)
 
     def jump_dialog(self) -> None:
         if not self.items:
