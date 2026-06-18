@@ -5,6 +5,7 @@
 #   ./run.sh questions             open the questions app
 #   ./run.sh flashcards            open the flashcards app
 #   ./run.sh import                re-run the .txt -> .md importer
+#   ./run.sh webapp                build webapp data + serve it over the LAN
 #   ./run.sh stats                 show active / backlog counts
 #   ./run.sh add-question          read JSON from stdin, append a question
 #   ./run.sh add-flashcard         read JSON from stdin, append a flashcard
@@ -17,7 +18,7 @@ PY="$VENV/bin/python"
 PIP="$VENV/bin/pip"
 
 usage() {
-    sed -n '2,11p' "$0"
+    sed -n '2,12p' "$0"
     exit 1
 }
 
@@ -60,6 +61,19 @@ case "$cmd" in
         ;;
     import)
         exec "$PY" import_data.py "$@"
+        ;;
+    webapp)
+        # Regenerate the card payload, then serve webapp/ over the LAN so the
+        # phone (same Wi-Fi) can open it and "Add to Home Screen".
+        python3 scripts/gen_webapp.py
+        port="${1:-8000}"
+        ip="$(hostname -I 2>/dev/null | awk '{print $1}')"
+        echo
+        echo "Serving webapp/ on port $port. On your phone (same Wi-Fi) open:"
+        [[ -n "$ip" ]] && echo "    http://$ip:$port/" || echo "    http://<this-machine-ip>:$port/"
+        echo "Then use the browser menu -> Add to Home Screen. Ctrl-C to stop."
+        echo
+        exec python3 -m http.server "$port" --directory webapp
         ;;
     stats)
         exec "$PY" scripts/stats.py "$@"

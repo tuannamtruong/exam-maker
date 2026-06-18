@@ -5,6 +5,7 @@ Local exam-prep apps. Two separate Tkinter (customtkinter) GUIs over markdown fi
 - **Questions app** (`questions_app.py`) — multiple choice, 2–7 options, multi-correct supported. Orange/amber palette.
 - **Flashcards app** (`flashcards_app.py`) — flip-card. Teal/sky palette.
 - **Importer** (`import_data.py`) — one-shot conversion of `questions.txt` / `flashcards.txt` into per-item `.md` files.
+- **Flashcards web app** (`webapp/`) — simplified, read-only PWA port of the flashcards app for Android (flip / nav / shuffle / search / jump, local hide-list "backlog"; no add/edit). `scripts/gen_webapp.py` builds `webapp/cards.json` from the active `.md` files; `./run.sh webapp` regenerates it and serves the folder over the LAN. See `webapp/README.md`.
 
 ## File layout
 
@@ -37,6 +38,7 @@ exam-maker/
 ./run.sh questions              # open questions app
 ./run.sh flashcards             # open flashcards app
 ./run.sh import                 # re-run .txt -> .md importer
+./run.sh webapp                 # build webapp data + serve PWA over the LAN
 ./run.sh stats                  # counts of active / backlog
 ./run.sh add-question  < q.json # append a question (see schema below)
 ./run.sh add-flashcard < c.json # append a flashcard
@@ -81,6 +83,7 @@ The questions app has a **Hotkeys** button that shows this list in-app.
 | `←` / `a`      | Previous card                   |
 | `→` / `d`      | Next card                       |
 | `g`            | Jump to a card                  |
+| `f` / `/` / `Ctrl+F` | Search cards by text      |
 | `e`            | Edit the current card           |
 | `b`            | Move to / restore from backlog  |
 | `Ctrl+N`       | Add a new flashcard             |

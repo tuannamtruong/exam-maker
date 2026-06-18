@@ -1,0 +1,167 @@
+:root {
+  --bg:         #ECFEFF;  /* cyan-50  */
+  --surface:    #FFFFFF;
+  --primary:    #0D9488;  /* teal-600 */
+  --primary-hv: #0F766E;  /* teal-700 */
+  --accent:     #0EA5E9;  /* sky-500  */
+  --text:       #0F172A;  /* slate-900 */
+  --muted:      #475569;  /* slate-600 */
+  --border:     #99F6E4;  /* teal-200 */
+  --soft:       #CFFAFE;  /* cyan-100 */
+  --card-front: #F0FDFA;  /* teal-50  */
+  --card-back:  #E0F2FE;  /* sky-100  */
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 4px;
+  gap: 8px;
+}
+.title { font-weight: 700; font-size: 15px; color: var(--text); }
+.toggles { display: flex; gap: 12px; }
+
+.switch { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--muted); }
+.switch input { accent-color: var(--primary); width: 16px; height: 16px; }
+
+.category {
+  padding: 0 20px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--muted);
+  min-height: 16px;
+}
+
+.card {
+  flex: 1;
+  margin: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card-front);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background .15s ease;
+  cursor: pointer;
+}
+.card.flipped { background: var(--card-back); }
+
+.face {
+  align-self: flex-end;
+  padding: 12px 16px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--primary);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 28px 32px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.card.flipped .content { font-size: 19px; font-weight: 400; line-height: 1.45; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--primary);
+  background: var(--soft);
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); color: #fff; flex: 1; }
+.btn.soft { background: var(--soft); }
+.btn.small { padding: 12px 12px; font-size: 13px; }
+.btn.outline { background: transparent; border: 1px solid var(--primary); }
+#prev, #next { font-size: 22px; padding: 8px 16px; line-height: 1; }
+
+.muted { color: var(--muted); font-size: 13px; }
+
+/* Modals */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px;
+  z-index: 10;
+}
+.modal.hidden { display: none; }
+.sheet {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sheet.narrow { max-width: 320px; }
+.sheet input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+}
+.results { overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.result {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+.result .rid { color: var(--primary); font-weight: 700; margin-right: 6px; }
+.row { display: flex; gap: 8px; }
+.row .btn { flex: 1; }
+.close { align-self: flex-end; }
