@@ -726,33 +726,36 @@ class AddQuestionDialog:
         frm = ctk.CTkScrollableFrame(self.top, fg_color=P["bg"])
         frm.pack(fill="both", expand=True, padx=16, pady=12)
 
+        input_font = ctk.CTkFont(size=16)
+
         section_label(frm, "Scenario").pack(anchor="w", pady=(0, 4))
         self.scenario = ctk.CTkTextbox(frm, height=110, wrap="word", fg_color=P["surface"],
                                        border_width=1, border_color=P["border"],
-                                       text_color=P["text"])
+                                       text_color=P["text"], font=input_font)
         self.scenario.pack(fill="x", pady=(0, 8))
 
         section_label(frm, "Question").pack(anchor="w", pady=(0, 4))
         self.question = ctk.CTkTextbox(frm, height=60, wrap="word", fg_color=P["surface"],
                                        border_width=1, border_color=P["border"],
-                                       text_color=P["text"])
+                                       text_color=P["text"], font=input_font)
         self.question.pack(fill="x", pady=(0, 8))
 
         section_label(frm, "Options (one per line, 2 to 7)").pack(anchor="w", pady=(0, 4))
         self.options = ctk.CTkTextbox(frm, height=150, wrap="word", fg_color=P["surface"],
                                       border_width=1, border_color=P["border"],
-                                      text_color=P["text"])
+                                      text_color=P["text"], font=input_font)
         self.options.pack(fill="x", pady=(0, 8))
 
         section_label(frm, "Correct option numbers, comma-separated (e.g. 1,3)").pack(anchor="w", pady=(0, 4))
         self.correct = ctk.CTkEntry(frm, fg_color=P["surface"],
-                                    border_color=P["border"], text_color=P["text"])
+                                    border_color=P["border"], text_color=P["text"],
+                                    font=input_font)
         self.correct.pack(fill="x", pady=(0, 8))
 
         section_label(frm, "Explanation").pack(anchor="w", pady=(0, 4))
         self.explanation = ctk.CTkTextbox(frm, height=160, wrap="word", fg_color=P["surface"],
                                           border_width=1, border_color=P["border"],
-                                          text_color=P["text"])
+                                          text_color=P["text"], font=input_font)
         self.explanation.pack(fill="x", pady=(0, 8))
 
         if initial:

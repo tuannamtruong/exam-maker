@@ -519,21 +519,24 @@ class AddFlashcardDialog:
                                 font=ctk.CTkFont(size=11, weight="bold"),
                                 anchor="w")
 
+        input_font = ctk.CTkFont(size=16)
+
         label("Category").pack(anchor="w", pady=(0, 4))
         self.category = ctk.CTkEntry(frm, fg_color=P["surface"],
-                                     border_color=P["border"], text_color=P["text"])
+                                     border_color=P["border"], text_color=P["text"],
+                                     font=input_font)
         self.category.pack(fill="x", pady=(0, 8))
 
         label("Front").pack(anchor="w", pady=(0, 4))
         self.front = ctk.CTkTextbox(frm, height=80, wrap="word", fg_color=P["surface"],
                                     border_width=1, border_color=P["border"],
-                                    text_color=P["text"])
+                                    text_color=P["text"], font=input_font)
         self.front.pack(fill="x", pady=(0, 8))
 
         label("Back").pack(anchor="w", pady=(0, 4))
         self.back = ctk.CTkTextbox(frm, height=240, wrap="word", fg_color=P["surface"],
                                    border_width=1, border_color=P["border"],
-                                   text_color=P["text"])
+                                   text_color=P["text"], font=input_font)
         self.back.pack(fill="both", expand=True, pady=(0, 8))
 
         if initial:

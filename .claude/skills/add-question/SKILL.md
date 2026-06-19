@@ -57,10 +57,11 @@ From the raw paste, build these fields:
 
   **Use acronyms in the explanation.** Define a term once with its acronym in
   parentheses on first mention, then use the acronym everywhere after — e.g.
-  first "Local Secondary Index (LSI)", then "LSI"; "Global Secondary Index (GSI)"
-  then "GSI". This is one of the few edits to make to the otherwise-verbatim
-  prose: collapse repeated long forms ("Local Secondary Index" → "LSI") into the
-  acronym after it's been introduced.
+  first "Web Application Firewall (WAF)", then "WAF". This is one of the few edits
+  to make to the otherwise-verbatim prose: collapse repeated long forms ("Web
+  Application Firewall" → "WAF") into the acronym after it's been introduced.
+  (Pre-approved terms like LSI/GSI below are exempt — never spell those out, not
+  even once.)
 
   **Pre-approved terms — always collapse, every occurrence, in scenario,
   question, options, AND explanation:** ALB, ELB, CA (certificate authority),
