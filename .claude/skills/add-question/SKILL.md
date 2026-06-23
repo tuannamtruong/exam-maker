@@ -66,10 +66,15 @@ From the raw paste, build these fields:
   **Pre-approved terms — always collapse, every occurrence, in scenario,
   question, options, AND explanation:** ALB, ELB, CA (certificate authority),
   ACM (AWS Certificate Manager), ASG (Auto Scaling Group), NLB (Network Load
-  Balancer), IaC (Infrastructure as Code), IoT (Internet of Things), LSI, GSI.
-  These are so familiar you don't need to spell them out at all — use the acronym
+  Balancer), IaC (Infrastructure as Code), IoT (Internet of Things), LSI, GSI,
+  EFA (Elastic Fabric Adapter), ENA (Elastic Network Adapter). These are so
+  familiar you don't need to spell them out at all — use the acronym
   everywhere, including the first mention (no need to write the long form even
-  once). Also strip redundant trailing nouns the source bolts onto an acronym:
+  once). One special-cased name: **(AWS) Personal Health Dashboard / AWS Health
+  → always `AWS Health`** — collapse "AWS Personal Health Dashboard (AWS Health)"
+  and "Personal Health Dashboard" to just `AWS Health` (this is the one term that
+  keeps its "AWS" prefix despite the prefix-strip rule below). Also strip
+  redundant trailing nouns the source bolts onto an acronym:
   "ELB load balancer" → "ELB", "ALB load balancer" → "ALB". This is the **one**
   exception to keeping the scenario, question, and option text verbatim —
   collapse these specific pre-approved terms there too. The general
