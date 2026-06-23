@@ -79,6 +79,7 @@ The questions app has a **Hotkeys** button that shows this list in-app.
 | `b`            | Move to / restore from backlog  |
 | `Ctrl+N`       | Add a new question              |
 | `Ctrl` `+`/`-`/`0` | Font larger / smaller / reset |
+| `F11` / `Esc`  | Toggle / exit fullscreen        |
 
 **Flashcards app**
 
@@ -93,6 +94,7 @@ The questions app has a **Hotkeys** button that shows this list in-app.
 | `b`            | Move to / restore from backlog  |
 | `Ctrl+N`       | Add a new flashcard             |
 | `Ctrl` `+`/`-`/`0` | Font larger / smaller / reset |
+| `F11` / `Esc`  | Toggle / exit fullscreen        |
 
 ## Data format — questions
 

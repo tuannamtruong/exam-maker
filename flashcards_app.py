@@ -21,24 +21,25 @@ BACKLOG_DIR = ROOT / "data" / "flashcards" / "backlog"
 
 STATE_FILE = ROOT / ".app_state.json"
 STATE_KEY = "flashcards_font_scale"
+DIALOG_STATE_KEY = "flashcards_dialog_font_scale"
 
 
-def load_font_scale() -> float:
+def load_font_scale(key: str = STATE_KEY) -> float:
     try:
-        scale = json.loads(STATE_FILE.read_text()).get(STATE_KEY, 1.0)
+        scale = json.loads(STATE_FILE.read_text()).get(key, 1.0)
         return max(0.7, min(2.5, float(scale)))
     except (OSError, ValueError, TypeError):
         return 1.0
 
 
-def save_font_scale(scale: float) -> None:
+def save_font_scale(scale: float, key: str = STATE_KEY) -> None:
     try:
         state = json.loads(STATE_FILE.read_text())
         if not isinstance(state, dict):
             state = {}
     except (OSError, ValueError):
         state = {}
-    state[STATE_KEY] = scale
+    state[key] = scale
     try:
         STATE_FILE.write_text(json.dumps(state, indent=2))
     except OSError:
@@ -176,6 +177,14 @@ class FlashcardsApp:
             self.root.bind(key, lambda _e: self.search_dialog())
         for key in ("<KeyPress-e>", "<KeyPress-E>"):
             self.root.bind(key, lambda _e: self.edit_dialog())
+        self.root.bind("<F11>", lambda _e: self._toggle_fullscreen())
+        self.root.bind("<Escape>", lambda _e: self._exit_fullscreen())
+
+    def _toggle_fullscreen(self) -> None:
+        self.root.attributes("-fullscreen", not self.root.attributes("-fullscreen"))
+
+    def _exit_fullscreen(self) -> None:
+        self.root.attributes("-fullscreen", False)
 
     def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
         f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
@@ -510,6 +519,17 @@ class AddFlashcardDialog:
         self.top.transient(parent)
         self.top.after(50, self.top.grab_set)
 
+        # Action bar — pinned to the bottom of the window (outside the content
+        # area) so it stays put and full-size when the input fonts grow.
+        btns = ctk.CTkFrame(self.top, fg_color="transparent")
+        btns.pack(side="bottom", fill="x", padx=16, pady=(0, 12))
+        ctk.CTkButton(btns, text="Cancel", corner_radius=8, fg_color=P["soft"],
+                      hover_color=P["border"], text_color=P["primary"],
+                      command=self.top.destroy).pack(side="right", padx=6)
+        ctk.CTkButton(btns, text="Save", corner_radius=8, fg_color=P["primary"],
+                      hover_color=P["primary_hv"], text_color="white",
+                      command=self._save).pack(side="right")
+
         frm = ctk.CTkFrame(self.top, fg_color=P["bg"])
         frm.pack(fill="both", expand=True, padx=16, pady=12)
 
@@ -519,7 +539,20 @@ class AddFlashcardDialog:
                                 font=ctk.CTkFont(size=11, weight="bold"),
                                 anchor="w")
 
-        input_font = ctk.CTkFont(size=16)
+        self.font_scale = load_font_scale(DIALOG_STATE_KEY)
+        self._fonts: list[tuple[ctk.CTkFont, int, str]] = []
+        input_font = self._font(16)
+
+        fontbar = ctk.CTkFrame(frm, fg_color="transparent")
+        fontbar.pack(fill="x", pady=(0, 4))
+        ctk.CTkButton(fontbar, text="A+", width=36, corner_radius=8,
+                      fg_color=P["soft"], hover_color=P["border"],
+                      text_color=P["primary"],
+                      command=lambda: self._bump_font(0.1)).pack(side="right", padx=(6, 0))
+        ctk.CTkButton(fontbar, text="A−", width=36, corner_radius=8,
+                      fg_color=P["soft"], hover_color=P["border"],
+                      text_color=P["primary"],
+                      command=lambda: self._bump_font(-0.1)).pack(side="right")
 
         label("Category").pack(anchor="w", pady=(0, 4))
         self.category = ctk.CTkEntry(frm, fg_color=P["surface"],
@@ -544,20 +577,39 @@ class AddFlashcardDialog:
             self.front.insert("1.0", initial.get("front", ""))
             self.back.insert("1.0", initial.get("back", ""))
 
-        btns = ctk.CTkFrame(frm, fg_color="transparent")
-        btns.pack(fill="x", pady=8)
-        ctk.CTkButton(btns, text="Cancel", corner_radius=8, fg_color=P["soft"],
-                      hover_color=P["border"], text_color=P["primary"],
-                      command=self.top.destroy).pack(side="right", padx=6)
-        ctk.CTkButton(btns, text="Save", corner_radius=8, fg_color=P["primary"],
-                      hover_color=P["primary_hv"], text_color="white",
-                      command=self._save).pack(side="right")
-
         # Ctrl+S saves, Esc cancels (bound on the Toplevel so they fire from any
-        # focused field).
+        # focused field). Ctrl +/-/0 scale the input fields like the main window.
         self.top.bind("<Control-s>", lambda _e: self._save())
         self.top.bind("<Escape>", lambda _e: self.top.destroy())
         self.top.bind("<Control-w>", lambda _e: self.top.destroy())
+        self.top.bind("<Control-plus>", lambda _e: self._bump_font(0.1))
+        self.top.bind("<Control-equal>", lambda _e: self._bump_font(0.1))
+        self.top.bind("<Control-minus>", lambda _e: self._bump_font(-0.1))
+        self.top.bind("<Control-0>", lambda _e: self._reset_font())
+
+    def _font(self, size: int, weight: str = "normal") -> ctk.CTkFont:
+        f = ctk.CTkFont(size=max(8, int(round(size * self.font_scale))), weight=weight)
+        self._fonts.append((f, size, weight))
+        return f
+
+    def _apply_font_scale(self) -> None:
+        for f, base, _weight in self._fonts:
+            f.configure(size=max(8, int(round(base * self.font_scale))))
+
+    def _bump_font(self, delta: float) -> None:
+        new = max(0.7, min(2.5, round(self.font_scale + delta, 2)))
+        if new == self.font_scale:
+            return
+        self.font_scale = new
+        self._apply_font_scale()
+        save_font_scale(self.font_scale, DIALOG_STATE_KEY)
+
+    def _reset_font(self) -> None:
+        if self.font_scale == 1.0:
+            return
+        self.font_scale = 1.0
+        self._apply_font_scale()
+        save_font_scale(self.font_scale, DIALOG_STATE_KEY)
 
     def _save(self) -> None:
         category = self.category.get().strip()
