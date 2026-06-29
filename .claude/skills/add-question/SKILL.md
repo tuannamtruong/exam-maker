@@ -29,10 +29,19 @@ to use the app's Edit dialog), or a long document with many questions (that is
 From the raw paste, build these fields:
 
 - **scenario** — the context paragraph(s). Keep verbatim, except collapse the
-  pre-approved terms below (e.g. "Auto Scaling Group" → "ASG").
+  pre-approved terms below (e.g. "Auto Scaling Group" → "ASG"). **Do not rewrite,
+  reword, or reflow the scenario into cleaner prose, and do not "fix" grammar or
+  fragments** — even when the source is garbled, fragmentary, or not
+  grammatically correct, preserve its wording and structure as pasted. Don't
+  invent framing the source doesn't state (e.g. "A gaming company…"). **Obvious
+  spelling typos and paste artifacts are the exception — those you may fix**
+  (e.g. a clipped "atalog" → "catalog", a doubled word, a stray character). Fix
+  the typo; leave the awkward-but-intentional phrasing alone.
 - **question** — the question line (e.g. "Which … (Select TWO.)"). If the source
   has *no* question line and the scenario poses the question, leave it out — do
-  **not** invent one.
+  **not** invent one. When the source *does* have a question line, keep it
+  verbatim — **same rule as the scenario**: don't reword or reflow it even if
+  it's not grammatically correct, but obvious spelling typos may be fixed.
 - **options** — the answer choices, in source order, as plain strings (no `1.`
   numbering — the renderer numbers them). Verbatim, except collapse the
   pre-approved terms below.
@@ -156,6 +165,19 @@ source piped to the CLI), then **re-render and confirm the rendered preview
 matches `adjusted.md` byte-for-byte**. Their hand-edits win over your generated
 version — never discard them or append the pre-edit JSON.
 
+To fold edits back, don't re-type the JSON by hand — run the `md_to_json.py`
+helper, which parses the edited `.md` back into the CLI JSON:
+
+```bash
+python3 .claude/skills/add-question/md_to_json.py /tmp/adjusted.md > /tmp/question.json
+# verify the round-trip (renders identically, modulo blank lines the renderer normalizes):
+python3 .claude/skills/add-question/preview.py < /tmp/question.json | diff - /tmp/adjusted.md
+```
+
+A `diff` that shows only stray blank lines (e.g. a leading blank in a section
+left after deleting text) is fine — the renderer normalizes those. Any other
+difference means the parse missed an edit; fix it before appending.
+
 ## Append (only after approval)
 
 Pipe the **same JSON** to the real CLI from the project root. Use a heredoc to
@@ -179,6 +201,11 @@ to the user. On validation failure it prints `error: …` to stderr and exits `2
 - **Append only.** Never modify an existing `q-NNNN.md`.
 - **Don't invent a question line** when the source has none (scenario-only is
   valid).
+- **Don't rewrite or reword the scenario or question.** Keep their wording and
+  structure as pasted even when fragmentary or not grammatically correct; only
+  the pre-approved-term/AWS-prefix collapses and **obvious spelling-typo/paste-
+  artifact fixes** (e.g. "atalog" → "catalog") may change them. Don't add
+  invented framing or reflow into cleaner prose.
 - **Confirm an ambiguous correct answer.** If you can't match "Hence, the correct
   answer…" to an option with confidence, ask — never guess.
 
@@ -197,9 +224,14 @@ to the user. On validation failure it prints `error: …` to stderr and exits `2
 - `preview.py` finds the project root as `parents[3]` of its own path. It only
   works while it lives at `.claude/skills/add-question/preview.py`.
 
-## The driver
+## The drivers
 
 `.claude/skills/add-question/preview.py` — dry-run renderer. Reads the
 `add_question.py` JSON schema on stdin, prints the rendered `q-NNNN.md` to
 stdout, writes nothing. It delegates formatting + validation to `add_question`
 so there is no second copy of the rendering logic to drift.
+
+`.claude/skills/add-question/md_to_json.py` — the inverse: parses a rendered
+`q-NNNN.md` (default `/tmp/adjusted.md`, or a path arg, or `-` for stdin) back
+into `add_question.py` JSON on stdout. Use it to fold the user's diff-pane
+hand-edits back into `/tmp/question.json`. Round-trips with `preview.py`.

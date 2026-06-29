@@ -1,0 +1,289 @@
+﻿id;category;front;back
+fc-0001;Application;AppConfig;a capability of AWS Systems Manager (SSM). Manage, store, and quickly deploy application configurations independently of your code.
+fc-0002;Application;AppFlow;integration service for transferring data securely between SaaS applications like Salesforce, SAP, Zendesk, Slack, ServiceNow, and AWS services.
+fc-0003;Application;Application Migration Service (MGN);An automated lift-and-shift solution that simplifies, expedites, and lowers the cost of migrating applications to AWS.
+fc-0004;Application;AppStream;streaming desktop applications to end user.
+fc-0005;Application;AppSync;fully managed service for building scalable (GraphQL) APIs that connect app to data. Securely access, manipulate, and combine data from multiple sources in real time. Serverless.
+fc-0006;Application;AppSync pipeline resolvers;aggregating data from multiple database tables. Server-side solution.
+fc-0007;Application;Elastic Beanstalk;a PaaS, that deploys and manages applications without managing infrastructure.
+fc-0008;AI;Bedrock;Fully managed service offering foundation models from leading AI companies via a single API to build generative AI applications.
+fc-0009;AI;Comprehend;Natural Language Processing for document for insights and sentiments reading.
+fc-0010;AI;Kendra;search unstructured data and improve accuracy in search results
+fc-0011;AI;Lex;Text or Voice conversational interfaces. Speech to text.
+fc-0012;AI;Macie;Policy or Sensitive data Findings in S3.
+fc-0013;AI;Polly;Text to life-like speech.
+fc-0014;AI;Textract;Detect and analyse text
+fc-0015;AI;Transcribe;Audio to Text.
+fc-0016;Backup;AWS Backup;centralize and automate data protection for cross AWS services, cross account and cross region. Compliance.
+fc-0017;Backup;Backup Vault Lock;WORM. Retention. Ransomware protection.
+fc-0018;Backup;Data Lifecycle Manager (DLM) ;automates the creation, retention and deletion of EBS snapshots.
+fc-0019;Best practices;Control Tower;typically used for multi-account governance and high-level policy enforcement using SCPs.
+fc-0020;Best practices;Account Factory;Automate the setup of AWS environment with best-practices blueprints for multi-account structure, identity, access management, and account provisioning workflow. For ongoing governance, you can select and apply pre-packaged policies enterprise-wide or to specific groups of accounts.
+fc-0021;Best practices;Account Drift;configuration gap. Actual state of an AWS account no longer matches the intended state.
+fc-0022;Best practices;Compute Optimizer;Generate recommendations for EC2, Lambda, ASG, EBS.
+fc-0023;Best practices;Trusted Advisor;analyzes AWS environment and provides AWS best practice recommendations in Cost Optimization, Performance, Security, Fault Tolerance and    Service Limits.
+fc-0024;Best practices;Well-Architected Tool;automatically monitor the status of your workloads across your AWS account, conduct architectural reviews and check for AWS best practices.
+fc-0025;Best practices;Inspector;vulnerbilities and deviations from best Practices of application in EC2, ECR, Lambda, AWS Organizations.
+fc-0026;Big Data;Athena;SQL over S3. GB-TB. Ad-hoc. Loading/Transform isnâ€™t desired. Serverless.
+fc-0027;Big Data;Elastic MapReduce (EMR);"managed cluster platform that simplifies running big data frameworks, such as Apache Spark, Apache Hadoop, and Presto, to process and analyze vast amounts of data.
+Primay/Core/Task node.
+Transient Cluster.
+Long-running Cluster."
+fc-0028;Big Data;;
+fc-0029;Long-running Cluster;Serverless EMR;can integrate with EMR runtime roles and Lake Formation, which ideal for access control. Does not support Apache Ranger
+fc-0030;Long-running Cluster;Glue;ETL service. Prepare, process and analyze (big) data in S3, BigData workflow.
+fc-0031;Long-running Cluster;Data Catalog;store and retrieve table metadata for the S3 data in your AWS account.
+fc-0032;Long-running Cluster;DataBrew;visual data preparation, transformation tool that enables users to clean and normalize data without writing any code. Data profiling and data lineage.
+fc-0033;Long-running Cluster;Redshift;DW. Use existing Business Intelligence tools.
+fc-0034;Long-running Cluster;Spectrum;extends the querying capabilities of Redshift to also access and analyze structured and semi-structured data in S3, supporting large-scale analytics.
+fc-0035;Compliance;Artifact;go-to, central resource for compliance-related information that matters to you. Prove that the services the company is using meet common security and regulatory standards. Usecase: Your company is undergoing an audit and needs to prove that the data center where your servers live is ISO 27001 certified.
+fc-0036;Container;EBS Container Storage Interface (CSI);provide persistent block storage to containers.
+fc-0037;Container;Elastic Kubernetes Service (EKS) ;running and managing containers, storing configuration data and secrets. Cloud-agnostic. Open-source.
+fc-0038;Container;EKS/ECS Anywhere;run AWS clusters on your own on-premises hardware or private data centers (outside AWS). Compliance.
+fc-0039;Container;Prometheus;time-series DB and monitoring toolkit for container environments.
+fc-0040;Container;Proton;(continuous) delivery service for containerized and serverless app. IaC.
+fc-0041;Container;Karpenter;Kubernetes Cluster Autoscaler / Infrastructure Automation.
+fc-0042;Compute;Batch;run batch computing workloads. Dynamic provisioning compute resources. Region. Parallel computation.
+fc-0043;Compute;ParallelCluster;AWS-supported open-source cluster management tool that makes it easy for you to deploy and manage HPC clusters on AWS
+fc-0044;Cost;Billing & Cost Management;high-level summary. Control center for bills, payments, tax and budget.
+fc-0045;Cost;Cost Anomaly Detection;detect and alert on anomalous spend patterns in your deployed AWS services.
+fc-0046;Cost;Cost Explorer;Visualize and analyze. Daily/monthly trend. Which service cost what. Cost spike. Break down by team per tag. Forcasting spend.
+fc-0047;Cost;Cost and Usage Report (CUR);raw data. Hourly/resource level. Deleivered to S3. Custom report. Advanced analytic.
+fc-0048;Cost;CloudWatch Billing Alarm;simple early warning system.
+fc-0049;Kinesis + Lake formation;Kinesis Data Streams;real-time data streaming service for ingesting, storing, and processing high-throughput event data with millisecond latency. Shard. Cross accounts.
+fc-0050;Kinesis + Lake formation;Kinesis Data Firehose;near real-time fully managed service that load data for data lakes, data stores and analytic services. Hard 5-minute timeout for its calls to Lambda. Shard.
+fc-0051;Kinesis + Lake formation;Kinesis Data Analytic;real-time processing data. Use SQL. Ingest from KDS/KDF.
+fc-0052;Kinesis + Lake formation;Lake Formation;Data governance and lake management.  S3-based storage plus surrounding services. Column-level access control. Simplifies creating, securing, and managing data lakes. Cross accounts.
+fc-0053;Kinesis + Lake formation;Blueprints;automate the process of data ingestion into the data lake. â€œIncremental databaseâ€ blueprint suitable for loading only new data database into the S3 data lake.
+fc-0054;DB;Keyspaces;scalable, HA and managed Apache Cassandra-compatible DB service. Scenarios with high-velocity, high-volume data with flexible schemas. Write-optimized.
+fc-0055;DB;Neptune;"purpose-built, fully-managed graph DB service optimized for storing billions of relationships and querying the graph with milliseconds latency.
+Highly connected data typical in social networking, recommendation engines, and fraud detection applications."
+fc-0056;DB;;
+fc-0057;DB;Neptune stream;real-time, consistent, and ordered change data capture.
+fc-0058;DB;Directory Services;managed directory service that provides directory-based authentication and authorization in AWS without managing on-premises directory infrastructure.
+fc-0059;DB;Simple AD;Default. Simple req. Directory in AWS. Subset Microsoft AD.
+fc-0060;DB;Microsoft AD;App in AWS, that needs MS AD DS or TRUST AD DS.
+fc-0061;DB;AD Connector;Hybrid. No data in cloud. Directory proxy.
+fc-0062;EC2 Placement Group;Cluster;Performance
+fc-0063;EC2 Placement Group;Spread;Resilience â€“ 7 EC2 per AZ
+fc-0064;EC2 Placement Group;Partition;Topology awareness â€“ 7 Partions per AZ
+fc-0065;Outpost vs Local Zones (Distributed Cloud);Local Zones;extensions of AWS Regions. Bring compute, storage, and networking physically nearer to end users. Single-digit ms latency to end-users.
+fc-0066;Outpost vs Local Zones (Distributed Cloud);Outpost;brings AWS hardware and AWS services into your on-premises data center. Run AWS infrastructure inside your building, while being managed and controlled as part of an AWS Region. Hybrid.
+fc-0067;Outpost vs Local Zones (Distributed Cloud);Outposts brings AWS into your building, while Local Zones br;Outposts brings AWS into your building, while Local Zones brings AWS into userâ€™s city.
+fc-0068;Outpost vs Local Zones (Distributed Cloud);AWS Outposts;more preferable if you have a requirement to run AWS services locally in your on-premieses network.
+fc-0069;Governance;Cognito;not designed to integrate with corporate directory services for centralized authentication directly. Temp credential.
+fc-0070;Governance;Resource Access Manager (RAM) securely share AWS resources a;Resource Access Manager (RAM) securely share AWS resources across accounts, OUs, or entire AWS Organization. Eliminate duplicated resources in multiple accounts. Maintaining security and consistency.
+fc-0071;Monitor/Logger;CloudTrail;Auditing and Governance. Activity by user, role, or service in an AWS account. Action taken in Management Console, AWS Command Line Interface, and AWS SDKs and APIs.
+fc-0073;Monitor/Logger;Lake;SQL-based queries on logs.
+fc-0074;Monitor/Logger;Processing Library (CTPL);easy way to process CloudTrail logs.
+fc-0075;Monitor/Logger;Log File Validation;determine whether a log file was modified, deleted, or unchanged.
+fc-0076;Monitor/Logger;Insights;detects unusual activity associated with API call rates and API error rates.
+fc-0077;Monitor/Logger;CloudWatch;Performance and Health. CPU utilization, Network utilization, Disk performance, and Disk Reads/Writes.
+fc-0078;Monitor/Logger;CloudWatch Application Insights;facilitates observability for your applications and underlying AWS resources.
+fc-0079;Monitor/Logger;CloudWatch Container Insights;collects data as performance log events using embedded metric format fÃ¼r EKS, ECS and k8s.
+fc-0080;Monitor/Logger;Config;Compliance. Assess, record, audit, and evaluate the configurations and relationships of your resources.
+fc-0081;Monitor/Logger;ELB Access Log;detailed information of all HTTP requests that go through LB. Request Info: clientâ€™s IP, latencies, request paths, and server responses.
+fc-0082;Monitor/Logger;VPC Flow Logs;network traffic metadata for resources in a VPC.
+fc-0083;Monitor/Logger;VPC Traffic Mirroring;copy network traffic at the ENI.
+fc-0084;Migration to AWS;Amazon MQ;migration from existing system with little to no changes. APIs such as JMS. AMQP, MQTT, STOMP or OpenWire. Need private network.
+fc-0085;Migration to AWS;Application Discovery Service;migration planning by collecting usage and configuration data about your on-premises servers.
+fc-0086;Migration to AWS;DataSync;simple and fast to move large amounts of data online between on-premises and AWS storage.
+fc-0087;Migration to AWS;Database Migration Service (DMS) migrate DBs with virtually;Database Migration Service (DMS) migrate DBs with virtually no downtime.
+fc-0088;Migration to AWS;Schema Conversion Tool;is typically used for heterogeneous migrations where youâ€™re moving from one type of database to another (e.g., Oracle to PostgreSQL).
+fc-0089;Migration to AWS;Migration Hub;provides a single place to discover your existing servers, plan migrations, and track the status of each application migration.
+fc-0090;Network;AWS Network Firewall;Stateful protections from common network threats in L3/4. Filter traffic at the perimeter of your VPC. Allow/Deny.
+fc-0091;Network;Network Access Control List (NACL) ;"1 NACL. Only for subnet.
+Stateless. Explicit allow, deny. N Subnet"
+fc-0092;Network;Security Group (SG);Stateful virtual firewall for instance level control. Allow, Implicit Deny.
+fc-0093;Network;;
+fc-0094;Network;Bastion host;a computer on a network specifically designed and configured to withstand attacks. In public subnet. With public/elastic IP with RDP/SSH access.
+fc-0095;Network;VPC Network Access Analyzer;analyzes reachability and policy paths.
+fc-0096;Privacy;Secrets Manager;rotate, manage, and retrieve database credentials, API keys, OAuth tokens, and other secrets throughout their lifecycle. No en/decrypt.
+fc-0097;Privacy;;
+fc-0098;Privacy;;
+fc-0099;Privacy;;
+fc-0100;Privacy;;
+fc-0101;Privacy;S3 Object Lock;Legal -> Gorvernance -> Compliance
+fc-0105;Security;Detective;how it happened and who was involved by building a visual map of the incident. AI powered.
+fc-0106;Security;GuardDuty;a threat detection for malicious activity and anomalous behavior. By analyzes events across your AWS accounts from: CloudTrail, VPC Flow Logs, DNS Logs
+fc-0107;Security;Security Hub;comprehensive view of your security posture across AWS accounts. Evaluate compliance with industry standards and best practices.
+fc-0108;Security;Firewall Manager;simplifies administration and maintenance across accounts and resources for a variety of protections. Including: WAF, Shield Advanced, SGs and NACLs, Network Firewall, and R53 Resolver DNS Firewall.
+fc-0109;Snow;Snowball;50TB or 80TB Capacity. 10 TB â€“ 10 PB economical range.
+fc-0110;Snow;Snowball Edge;Storage + compute.
+fc-0111;Snow;Snowmobile;10 PB+.
+fc-0112;Snow;OpsHub;manage your devices and local AWS services. unified view of the AWS services that are running on Snowball Edge and automates operational tasks through AWS Systems Manager.
+fc-0113;Standalone;Apache Flink Studio;data stream in real time.
+fc-0114;Standalone;CodeConnections;securely connect AWS services, such as CodePipeline, with third-party source control systems like GitHub.
+fc-0115;Standalone;Code Pipeline;fully managed CD service.
+fc-0116;Standalone;CloudHub;Intergration Platform aaS. Allow dev to deploy, manage and scale Mule app without having to manage the underlying VM, OS and hardware.
+fc-0117;Standalone;Cache-Control private directive;content is cached by CloudFront and individual user browsers but not by shared caches, thereby maintaining control over content freshness.
+fc-0118;Standalone;response headers policies;tell which HTTP headers should be included or excluded in the responses sent by CloudFront.
+fc-0119;Standalone;Field-Level Encryption;securly upload user-submitted sensitive information to your web servers.
+fc-0120;Standalone;CloudHSM;cloud-based hardware security module (HSM) that enables you to easily generate and use your own encryption keys on the AWS Cloud.
+fc-0121;Standalone;Identity pool;temp authorization and accessing AWS services.
+fc-0122;Standalone;User pool;authorization and authentication for applications. Canâ€™t use AWSS. MFA.
+fc-0123;Standalone;Data Exchange;Easily find, subscribe to and use third-party data in the cloud.
+fc-0124;Standalone;ElastiCache;In-memory DB. Redis or Memcached aaS. Code changes.
+fc-0125;Standalone;Memcached;Simple schema, no replication, sharding, no backup, multi threads.
+fc-0126;Standalone;Redis;Advanced schema, multi-AZ, replication, backup & restore, transactions.
+fc-0127;Standalone;Auto Discovery;give information the list of active nodes.
+fc-0128;Standalone;Elastic Disaster Recovery (DRS);continuous block-level replication, recovery orchestration, and automated server conversion capabilities. RPO, RTO 5-20 mins.
+fc-0129;Standalone;Encryption S3;Client-C-S3-KMS
+fc-0130;VPC Endpoint;Gateway;S3. No ENI for each AZ. Free.
+fc-0131;VPC Endpoint;Interface;no S3. EC2 API, Kinesis... Not HA.
+fc-0132;FSx;Lustre;HPC. 100â€˜s GB/s throughput. No HA/Replication. Parallel File System. POSIX. 1 AZ.
+fc-0133;FSx;Windows File Server;SMB. AZs. Windows Server, Microsoft AD.
+fc-0134;FSx;OpenZFS;ZFS, Linux-based file servers. NFS. AZs.
+fc-0135;FSx;NetApp ONTAP;ONTAP, NAS appliances. SMB, NFS, iSCSI. Hybrid. AZs.
+fc-0136;FSx;NetApp SnapMirror;replication schedule. Disaster Recovery and data mobility. Region, cross-region.
+fc-0137;Lambda;execution role;grant Lambda functions access to other AWS services.
+fc-0138;Lambda;resource-based policies;grant usage permission to other AWS accounts on a per-resource basis.
+fc-0139;Lambda;Snapstart;cached initialized environment.
+fc-0140;Lambda;Lambda layers;utilized for build/space optimization or dependency reuse.
+fc-0141;Lambda;Gateway LB;deploy and manage a fleet of third-party virtual appliances. L3/4.
+fc-0142;Lambda;Global Accelerator;Non HTTP performance network. Routing user traffic through AWS's optimized network paths.
+fc-0143;Lambda;Grafana;dashboarding engine. No data. Monitoring, alerts, and dashboard views across Kubernetes , app, and infra.
+fc-0144;Lambda;Pinpoint;flexible, multi-channel marketing and customer (multi-)engagement service.
+fc-0145;Lambda;QuickSight;business analytics service. Visualizations, perform ad-hoc analysis, and quickly get business insights from their data, anytime, on any device.
+fc-0146;Lambda;Systems Manager Automation;simplify common maintenance and deployment tasks of Amazon EC2 instances and other AWS resources.
+fc-0147;Lambda;Simple Email Service (SES);sending bulk emails, transactional emails, and marketing communications, rather than system notifications.
+fc-0148;Lambda;Simple Workflow Service (SWF);decoupled architecture in AWS
+fc-0149;Lambda;Step Functions;serverless orchestration service that strings together multiple AWS services (Lambda, S3, and DynamoDBâ€¦) into a coordinated workflow.
+fc-0150;Lambda;Transfer Family;allows for secure file transfer over protocols such as SFTP, FTPS, and FTP directly into and out of Amazon S3 or Amazon EFS.
+fc-0151;Lambda;Wavelength;combines the high bandwidth and ultralow latency of 5G networks with AWS compute and storage services so that developers can innovate and build a new class of applications.
+fc-0152;Lambda;Workspaces;A fully-managed, secure cloud persistent desktop service. high IOPS.
+fc-0153;Terms;EIP;per account, per region. For public internet.
+fc-0154;Terms;Customer-managed prefix lists  ;Sets of IP address ranges that you define and manage. You can share your prefix list with other AWS accounts, enabling those accounts to reference the prefix list in their own resources.
+;;AWS-managed prefix lists  ;Sets of IP address ranges for AWS services. You cannot create, modify, share, or delete an AWS-managed prefix list.
+;;Management Events;"visibility into management operations that are performed on resources in your AWS account.
+Scope: Changes to the configuration or existence of the resource."
+;;Data Events;"provide visibility into the resource operations performed on or within a resource.
+ Every interaction with the actual data stored in S3."
+;;RDS event;infrastructure-related events and not actual database changes
+fc-0156;Terms;Storage Gateway;"-Volume: iSCSI.Local 100%. Disaster Recovery - EBS. Full disk backup.
+-Tape:  iSCSI.
+-File: SMB. NFS. S3."
+fc-0157;Terms;Protocol to Service;"-file
+NFS(v4): (S3, FSx) File Gateway, EFS, Linux, FSx ZFS
+SMB: (S3, FSx) File Gateway, FSx Windows
+-block
+iSCSI: Volume Gateway, Tape Gateway, EBS, FSx NetAppOntap"
+fc-0158;Terms;Scaling;"Scaling - target tracking: target value for a specific metric.
+Scaling - step: capacity change based on the set of scaling / the size of the alarm breach."
+fc-0159;Terms;SQS;"pooling: long == wait time; short == immediate.
+ApproximateAgeOfOldestMessage metric is useful when applications have time-sensitive messages and you need to ensure that messages are processed within a specific time period."
+fc-0160;Terms;DNS record type;"A Domain  IPv4
+AAAA Domain  IPv6
+CNAME Aliases one domain name to another.
+DNS standard forbids CNAME at the apex because it would conflict with NS/SOA records.
+
+ALIAS Hostname -> AWS Resource
+Looks like an A/AAAA record to clients
+Behaves like a CNAME internally
+
+TXT
+Stores text information, often used for verification."
+fc-0161;Terms;VIF;"VIF: logical VLAN over a physical DX link.
+VIF private: access to private IPs.
+VIF public: access to AWS public zones. Public IP ranges."
+fc-0162;Terms;"Enhanced Networking
+EFA/ENA";"ENA Elastic Network Adapter 
+standard high-throughput VPC networking, up to 100+ Gbps for general workloads. 
+high-performance networking.
+SR-IOV.
+Higher IO, lower CPU utilization.
+Free.
+Lower & consistent (inter-instance) latency.
+Better packet per second perforamnce.
+
+(Elastic Fabric Adapter)
+EFA = ENA + OS-bypass. Not available for Windows.
+: OS-bypass for HPC and tightly-coupled MPI/ML workloads needing low latency and high inter-node throughput."
+fc-0163;Terms;Transfer 50 TB from on prime to AWS;"Snowball Device with 10Gbps local network: 5-7 days
+AWS Direct Connect with 10 Gbps: 11 hrs
+Internet 500 Mbps: 9,5 days
+Internet 50 Mbps: 48 days"
+fc-0164;Terms;Free transfer data cost;"Data transferred between Amazon EC2, Amazon RDS, Amazon Redshift, Amazon ElastiCache instances, and Elastic Network Interfaces in the same Availability Zone is free
+Data transfer between instances in private subnets is free"
+fc-0165;Terms;;
+fc-0166;Terms;IOPS;"EBS Throughput Optimized HDD 500 IOPS each volume
+EBS General SSD: up to 16k IOPS
+EBS Provisioned IOPS SSD: up to 64k IOPS
+RAID0 + EBS: up to 260k IOPS (io1/2-BE/GP2/3)
+EC2 instance store: >260k IOPS"
+fc-0167;Terms;ALB;ALB waits (default) 300 seconds. Range 0-3600 seconds.
+fc-0168;Terms;HTTP;"4xx Client
+5xx Server"
+fc-0169;Terms;instance system meta data;169.254.169.254/latest/meta-data
+fc-0170;Terms;;
+fc-0171;Terms;;
+fc-0172;Terms;EFS lifecycle policies;"Max 365 days
+Cant delete"
+fc-0173;Service Deep-dive;S3;"Lifecycle - IA: min 30 days.
+Each S3 prefix can support:
+3500 req per s for PUT/COPY/POST/DELETE
+5500 req per s for GET
+S3 Transfer Acceleration (S3TA) when you need to move large amounts of data over long geographical distances between your client and an S3 bucket.
+Prerequisites when routing traffic using Route 53 to a website that is hosted in an S3 Bucket:
+The S3 bucket name must be the same as the domain name.
+A registered domain name.
+S3 static website hosting
+Bucket must be publicly readable
+R53 Alias record (A/A4)"
+fc-0174;Service Deep-dive;EBS;"designed for superhigh performance situations, where lower latency and consistency of that lower latency are both important.
+Multi-attach feature
+accessible while performing snapshot."
+fc-0175;Service Deep-dive;RDS;"Secure in-flight data between your application and Amazon RDS:
+Configure your RDS instance to allow SSL/TLS connections. rds.force_ssl.
+Use RDS-provided CA certificate.
+Configure your application to connect using SSL/TLS.
+Optionally use IAM authentication for token-based login.
+Restrict access via VPC security groups."
+fc-0176;Service Deep-dive;EC2 Placement Groups;"Cluster	- 1 AZ for low latency and high network throughput, useful for HPC or tightly coupled workloads.
+Spread	- EC2 on separate underlying hardware. 7 per AZ
+Splits - Topology aware"
+fc-0177;Service Deep-dive;DynamoDB;PITR 35 days.
+fc-0178;Service Deep-dive;;
+fc-0179;Service Deep-dive;EC2 instance type;"Accelerated Computing: GPU. FPGA.
+Compute Optimized: Cost effective. Performance/Price ratio.
+Storage Optimized:High disk throughput. HDD Based. Low latency. High random IO. High sequential read. High IOPS.
+GP:  Fixed performance, bustable performance.
+Memory Optimized: Memory-intensive application. In memory application. High performance DB."
+fc-0180;Service Deep-dive;HSM vs KMS;"KMS: Multi tenant, fully managed, low fee
+HSM: Single tenant, self managed, high fee"
+fc-0181;EBS;EBS IOPS calculation for io1 volume (10 GiB)?;io1 = 50 IOPS/GiB. 10 GiB * 50 = 500 IOPS.
+fc-0182;Route 53;Which DNS record type points Route 53 record sets at AWS logical resources (ALB, CloudFront, S3 site, etc.)?;A record with ALIAS target (an A-ALIAS record). For IPv6 use AAAA-ALIAS. Alias records are free and resolve to the AWS resource's current IPs.
+fc-0183;Networking;;
+fc-0184;Networking;VPC Gateway endpoint vs Interface endpoint?;Gateway endpoint: S3 and DynamoDB only. Free. Added as a route table entry. Interface endpoint (AWS PrivateLink): most other services. Charged per hour + per GB. Creates an ENI in your subnet with a private IP.
+fc-0185;Containers;Karpenter, Proton, Prometheus;"Karpenter: Kubernetes node autoscaler (right-sizes/just-in-time provisions nodes). 
+Proton: managed templates/CI for container and serverless apps (platform team â†’ dev self-service). 
+Prometheus: metrics monitoring (pull-based time-series)."
+fc-0186;Storage;FSx for NetApp ONTAP DR with LEAST management overhead?;Create an FSx for ONTAP file system in both source and destination regions, establish connectivity via VPC peering, and configure NetApp SnapMirror to replicate data between the two file systems.
+fc-0187;CloudTrail;To audit data access at all levels in CloudTrail, what event types are needed?;"Both Management events (control-plane API calls like CreateBucket) AND Data events (object-level operations like S3 GetObject, Lambda Invoke). 
+
+By default, trails log management events. Data events are off billed extra."
+fc-0188;EC2;Golden AMI;A standardized, preconfigured AMI used as a trusted base image for launching EC2 instances. It usually includes the approved OS, security hardening, agents, patches, monitoring tools, and baseline application dependencies.
+fc-0189;EC2;EC2 Image Builder;An AWS service for automating customized, secure, up-to-date â€œgoldenâ€ server images.
+fc-0190;;AWS SDK;It is a set of language-specific libraries that lets your application call AWS services directly from code instead of manually sending raw HTTP API requests.
+fc-0191;;AWS CDK;"AWS Cloud Development Kit.
+
+It is an Infrastructure as Code framework where you define AWS infrastructure using normal programming languages like TypeScript, Python, Java, Go, or C#. CDK then converts your code into an AWS CloudFormation template and deploys it through CloudFormation."
+fc-0192;Term;X-Ray;distributed tracing service. It collects data about application requests and helps you analyze request paths, latency, errors, and downstream calls to services, databases, microservices, and APIs.
+fc-0193;;Shield / Shield Advanced / WAF;"Shield. L3/L4
+
+Advanced: + L7
+advanced detection, visibility, cost protection, DDoS Response Team,  AWS WAF
+
+WAF: SQLi, XSS, BLock IP, Rate Limit, Bot Traffic Detection"
+fc-0194;;Compliance for CloudTrail/Config/SSM Compliance;"CloudTrail = API audit trail
+AWS Config = AWS resource configuration compliance
+SSM Compliance = managed-node (EC2, on-prem) patch/configuration compliance"
+fc-0195;Logging & Monitoring;ELK Stack;"Elasticsearch + Logstash + Kibana.
+
+- Logstash â€” ingest & parse logs
+- Elasticsearch â€” search/index store
+- Kibana â€” visualize
+
+Data flow order: Logstash â†’ Elasticsearch â†’ Kibana (LEK)."
+;;CloudWatch Anomaly Detection ;"uses machine learning algorithms to automatically identify unusual patterns in your metrics without requiring manual threshold configuration. 
+may indicate problems or unexpected behavior in your applications or infrastructure."
