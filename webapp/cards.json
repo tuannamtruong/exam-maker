@@ -104,8 +104,8 @@
 {
 "id": "fc-0018",
 "category": "Backup",
-"front": "Data Lifecycle Manager (DLM) automates the creation, retenti",
-"back": "Data Lifecycle Manager (DLM) automates the creation, retention and deletion of EBS snapshots."
+"front": "Data Lifecycle Manager (DLM)",
+"back": "automates the creation, retention and deletion of EBS snapshots."
 },
 {
 "id": "fc-0019",
@@ -159,18 +159,12 @@
 "id": "fc-0027",
 "category": "Big Data",
 "front": "Elastic MapReduce (EMR)",
-"back": "managed cluster platform that simplifies running big data frameworks, such as Apache Spark, Apache Hadoop, and Presto, to process and analyze vast amounts of data."
-},
-{
-"id": "fc-0028",
-"category": "Big Data",
-"front": "Primay/Core/Task node",
-"back": "Primay/Core/Task node."
+"back": "managed cluster platform that simplifies running big data frameworks, such as Apache Spark, Apache Hadoop, and Presto, to process and analyze vast amounts of data.\nPrimay/Core/Task node.\nTransient Cluster.\nLong-running Cluster."
 },
 {
 "id": "fc-0029",
 "category": "Long-running Cluster",
-"front": "Serverless",
+"front": "Serverless EMR",
 "back": "can integrate with EMR runtime roles and Lake Formation, which ideal for access control. Does not support Apache Ranger"
 },
 {
@@ -218,8 +212,8 @@
 {
 "id": "fc-0037",
 "category": "Container",
-"front": "Elastic Kubernetes Service (EKS) running and managing contai",
-"back": "Elastic Kubernetes Service (EKS) running and managing containers, storing configuration data and secrets. Cloud-agnostic. Open-source."
+"front": "Elastic Kubernetes Service (EKS)",
+"back": "running and managing containers, storing configuration data and secrets. Cloud-agnostic. Open-source."
 },
 {
 "id": "fc-0038",
@@ -278,8 +272,8 @@
 {
 "id": "fc-0047",
 "category": "Cost",
-"front": "Cost and Usage Report (CUR) raw data. Hourly/resource level",
-"back": "Cost and Usage Report (CUR) raw data. Hourly/resource level. Deleivered to S3. Custom report. Advanced analytic."
+"front": "Cost and Usage Report (CUR)",
+"back": "raw data. Hourly/resource level. Deleivered to S3. Custom report. Advanced analytic."
 },
 {
 "id": "fc-0048",
@@ -327,13 +321,7 @@
 "id": "fc-0055",
 "category": "DB",
 "front": "Neptune",
-"back": "purpose-built, fully-managed graph DB service optimized for storing billions of relationships and querying the graph with milliseconds latency."
-},
-{
-"id": "fc-0056",
-"category": "DB",
-"front": "Highly connected data typical in social networking, recommen",
-"back": "Highly connected data typical in social networking, recommendation engines, and fraud detection applications."
+"back": "purpose-built, fully-managed graph DB service optimized for storing billions of relationships and querying the graph with milliseconds latency.\nHighly connected data typical in social networking, recommendation engines, and fraud detection applications."
 },
 {
 "id": "fc-0057",
@@ -424,12 +412,6 @@
 "category": "Monitor/Logger",
 "front": "CloudTrail",
 "back": "Auditing and Governance. Activity by user, role, or service in an AWS account. Action taken in Management Console, AWS Command Line Interface, and AWS SDKs and APIs."
-},
-{
-"id": "fc-0072",
-"category": "Monitor/Logger",
-"front": "Log management events and data events. By default, trails lo",
-"back": "Log management events and data events. By default, trails log management events, but not data events."
 },
 {
 "id": "fc-0073",
@@ -542,20 +524,14 @@
 {
 "id": "fc-0091",
 "category": "Network",
-"front": "Network Access Control List (NACL) Stateless. Explicit allow, deny. N Subnet",
-"back": "1 NACL. Only for subnet."
+"front": "Network Access Control List (NACL)",
+"back": "1 NACL. Only for subnet.\nStateless. Explicit allow, deny. N Subnet"
 },
 {
 "id": "fc-0092",
 "category": "Network",
-"front": "Security Group (SG) Stateful virtual firewall for instance l",
-"back": "Security Group (SG) Stateful virtual firewall for instance level control. Allow, Implicit Deny."
-},
-{
-"id": "fc-0093",
-"category": "Network",
-"front": "nacl for denied, sg for permit",
-"back": "nacl for denied, sg for permit."
+"front": "Security Group (SG)",
+"back": "Stateful virtual firewall for instance level control. Allow, Implicit Deny."
 },
 {
 "id": "fc-0094",
@@ -576,52 +552,10 @@
 "back": "rotate, manage, and retrieve database credentials, API keys, OAuth tokens, and other secrets throughout their lifecycle. No en/decrypt."
 },
 {
-"id": "fc-0097",
-"category": "Privacy",
-"front": "S3 Standard",
-"back": "no min storage duration."
-},
-{
-"id": "fc-0098",
-"category": "Privacy",
-"front": "S3 Glacier – Instant",
-"back": "once per qtr. ms access."
-},
-{
-"id": "fc-0099",
-"category": "Privacy",
-"front": "S3 Glacier – Flexible",
-"back": "Min-hour retrival."
-},
-{
-"id": "fc-0100",
-"category": "Privacy",
-"front": "S3 Glacier - Deep Archive",
-"back": "hour or days for retrival. Legal or Regulation storage."
-},
-{
 "id": "fc-0101",
 "category": "Privacy",
 "front": "S3 Object Lock",
 "back": "Legal -> Gorvernance -> Compliance"
-},
-{
-"id": "fc-0102",
-"category": "Security",
-"front": "Shield standard",
-"back": "L3/4 Ddos"
-},
-{
-"id": "fc-0103",
-"category": "Security",
-"front": "Shield avanced",
-"back": "+L7 Ddos"
-},
-{
-"id": "fc-0104",
-"category": "Security",
-"front": "WAF",
-"back": "L7 SQLi, XSS, Filtering"
 },
 {
 "id": "fc-0105",
@@ -878,8 +812,8 @@
 {
 "id": "fc-0147",
 "category": "Lambda",
-"front": "Simple Email Service (SES) sending bulk emails, transactiona",
-"back": "Simple Email Service (SES) sending bulk emails, transactional emails, and marketing communications, rather than system notifications."
+"front": "Simple Email Service (SES)",
+"back": "sending bulk emails, transactional emails, and marketing communications, rather than system notifications."
 },
 {
 "id": "fc-0148",
@@ -914,20 +848,14 @@
 {
 "id": "fc-0153",
 "category": "Terms",
-"front": "EIP: per account, per region",
-"back": "For public internet."
+"front": "EIP",
+"back": "per account, per region. For public internet."
 },
 {
 "id": "fc-0154",
 "category": "Terms",
-"front": "prefix lists",
-"back": "Customer-managed prefix lists  — Sets of IP address ranges that you define and manage. You can share your prefix list with other AWS accounts, enabling those accounts to reference the prefix list in their own resources.\nAWS-managed prefix lists  — Sets of IP address ranges for AWS services. You cannot create, modify, share, or delete an AWS-managed prefix list."
-},
-{
-"id": "fc-0155",
-"category": "Terms",
-"front": "Event",
-"back": "Management Events provide visibility into management operations that are performed on resources in your AWS account. These are also known as control plane operations. Management events can also include non-API events that occur in your account.\nExamples: CreateBucket, DeleteBucket, PutBucketPolicy, PutLifecycleConfiguration.\nScope: Changes to the configuration or existence of the resource.\nData Events, provide visibility into the resource operations performed on or within a resource. These are also known as data plane operations. It allows granular control of data event logging with advanced event selectors. You can currently log data events on different resource types such as Amazon S3 object-level API activity (e.g. GetObject, DeleteObject, and PutObject API operations), AWS Lambda function execution activity (the Invoke API), DynamoDB Item actions, and many more.\nExamples: GetObject, PutObject, DeleteObject.\nScope: Every interaction with the actual data stored in S3.\nRDS event: infrastructure-related events and not actual database changes"
+"front": "Customer-managed prefix lists",
+"back": "Sets of IP address ranges that you define and manage. You can share your prefix list with other AWS accounts, enabling those accounts to reference the prefix list in their own resources."
 },
 {
 "id": "fc-0156",
@@ -957,7 +885,7 @@
 "id": "fc-0160",
 "category": "Terms",
 "front": "DNS record type",
-"back": "TYPE\nDESCRIPTION\nA\nDomain  IPv4\nAAAA\nDomain  IPv6\nCNAME\nAliases one domain name to another.\nDNS standard forbids CNAME at the apex because it would conflict with NS/SOA records.\nALIAS\nHostname -> AWS Resource\nLooks like an A/AAAA record to clients\nBehaves like a CNAME internally\nMX\nDirects email to mail servers.\nNS\nSpecifies the authoritative nameserver for a domain.\nSOA\nContains administrative information about the domain, like the primary nameserver and zone update settings.\nTXT\nStores text information, often used for verification."
+"back": "A Domain  IPv4\nAAAA Domain  IPv6\nCNAME Aliases one domain name to another.\nDNS standard forbids CNAME at the apex because it would conflict with NS/SOA records.\n\nALIAS Hostname -> AWS Resource\nLooks like an A/AAAA record to clients\nBehaves like a CNAME internally\n\nTXT\nStores text information, often used for verification."
 },
 {
 "id": "fc-0161",
@@ -968,8 +896,8 @@
 {
 "id": "fc-0162",
 "category": "Terms",
-"front": "Enhanced Networking",
-"back": "ENA:\nhigh-performance networking.\nSR-IOV.\nHigher IO, lower CPU utilization.\nHigher\nFree.\nLower & consistent (inter-instance) latency.\nBetter packet per second perforamnce.\nEFA = ENA + OS-bypass. Not available for Windows."
+"front": "Enhanced Networking\nEFA/ENA",
+"back": "ENA Elastic Network Adapter \nstandard high-throughput VPC networking, up to 100+ Gbps for general workloads. \nhigh-performance networking.\nSR-IOV.\nHigher IO, lower CPU utilization.\nFree.\nLower & consistent (inter-instance) latency.\nBetter packet per second perforamnce.\n\n(Elastic Fabric Adapter)\nEFA = ENA + OS-bypass. Not available for Windows.\n: OS-bypass for HPC and tightly-coupled MPI/ML workloads needing low latency and high inter-node throughput."
 },
 {
 "id": "fc-0163",
@@ -982,12 +910,6 @@
 "category": "Terms",
 "front": "Free transfer data cost",
 "back": "Data transferred between Amazon EC2, Amazon RDS, Amazon Redshift, Amazon ElastiCache instances, and Elastic Network Interfaces in the same Availability Zone is free\nData transfer between instances in private subnets is free"
-},
-{
-"id": "fc-0165",
-"category": "Terms",
-"front": "Glacier retrieval",
-"back": "Storage Class\nRetrieval Tier\nTypical Retrieval Time\nGlacier Instant Retrieval\nStandard (Synchronous)\nMilliseconds\nGlacier Flexible Retrieval\nExpedited\n1–5 Minutes\nStandard\n3–5 Hours\nBulk\n5–12 Hours\nGlacier Deep Archive\nStandard\nWithin 12 Hours\nBulk\nWithin 48 Hours"
 },
 {
 "id": "fc-0166",
@@ -1014,34 +936,22 @@
 "back": "169.254.169.254/latest/meta-data"
 },
 {
-"id": "fc-0170",
-"category": "Terms",
-"front": "Protocols",
-"back": "SSH 22\nHTTPS 443\nHTTP 80\nephemeral port range\n-Linuxs 32768 – 65535\n-OSs 1024–65535\n-Window 49152–65535"
-},
-{
-"id": "fc-0171",
-"category": "Terms",
-"front": "Default/Standard",
-"back": "ASG default value for colddown is 300 seconds.\nWith no options changed, SQS gives you a standard queue,30-second visibility timeout, 4-day retention, short polling, no encryption, no DLQ, 256 KB message size."
-},
-{
 "id": "fc-0172",
 "category": "Terms",
 "front": "EFS lifecycle policies",
-"back": "Max 365 days\nCan’t delete"
+"back": "Max 365 days\nCant delete"
 },
 {
 "id": "fc-0173",
 "category": "Service Deep-dive",
 "front": "S3",
-"back": "Lifecycle “must wait” - IA: min 30 days.\nEach S3 prefix can support:\n3500 req per s for PUT/COPY/POST/DELETE\n5500 req per s for GET\nS3 Transfer Acceleration (S3TA) when you need to move large amounts of data over long geographical distances between your client and an S3 bucket.\nPrerequisites when routing traffic using Route 53 to a website that is hosted in an S3 Bucket:\nThe S3 bucket name must be the same as the domain name.\nA registered domain name.\nS3 static website hosting\nBucket must be publicly readable\nR53 Alias record (A/A4)"
+"back": "Lifecycle - IA: min 30 days.\nEach S3 prefix can support:\n3500 req per s for PUT/COPY/POST/DELETE\n5500 req per s for GET\nS3 Transfer Acceleration (S3TA) when you need to move large amounts of data over long geographical distances between your client and an S3 bucket.\nPrerequisites when routing traffic using Route 53 to a website that is hosted in an S3 Bucket:\nThe S3 bucket name must be the same as the domain name.\nA registered domain name.\nS3 static website hosting\nBucket must be publicly readable\nR53 Alias record (A/A4)"
 },
 {
 "id": "fc-0174",
 "category": "Service Deep-dive",
 "front": "EBS",
-"back": "Provisioned IOPS SSD (io1/2)\nindependent the size of the volume\ndesigned for superhigh performance situations, where lower latency and consistency of that lower latency are both important.\nMulti-attach feature\nEBS fully accessible while performing snapshot.\nAn application is hosted on an EC2 instance with multiple EBS Volumes attached and uses Amazon Neptune as its database. To improve data security, you encrypted all of the EBS volumes attached to the instance to protect the confidential data stored in the volumes.\nWhich of the following statements are true about encrypted Amazon Elastic Block Store volumes? (Select TWO.)\nThe volumes created from the encrypted snapshot are not encrypted.\nAll data moving between the volume and the instance are encrypted.\nSnapshots are automatically encrypted.\nSnapshots are not automatically encrypted.\nOnly the data in the volume is encrypted and not all the data moving between the volume and the instance."
+"back": "designed for superhigh performance situations, where lower latency and consistency of that lower latency are both important.\nMulti-attach feature\naccessible while performing snapshot."
 },
 {
 "id": "fc-0175",
@@ -1052,8 +962,8 @@
 {
 "id": "fc-0176",
 "category": "Service Deep-dive",
-"front": "Placement Groups",
-"back": "Partition Placement Groups (Topology Awareness)\nHuge scale parallel coputing system\nOffer visibility, which instance in which partition\nTask roles are the best pratice way to give containers within ECS permission to access AWS products and services."
+"front": "EC2 Placement Groups",
+"back": "Cluster\t- 1 AZ for low latency and high network throughput, useful for HPC or tightly coupled workloads.\nSpread\t- EC2 on separate underlying hardware. 7 per AZ\nSplits - Topology aware"
 },
 {
 "id": "fc-0177",
@@ -1062,22 +972,16 @@
 "back": "PITR 35 days."
 },
 {
-"id": "fc-0178",
-"category": "Service Deep-dive",
-"front": "R53",
-"back": "Multivalue answer routing policy: imple solution to improve web services’ availability and fault tolerance.\nThis policy allows Route 53 to respond to DNS queries with multiple resource records for a single domain, such as IP addresses for web servers. This enables the distribution of incoming traffic across several resources, similar to a load balancer at the DNS level. The key distinction is that it can include up to eight healthy resources in response to each DNS query, spreading the load and potentially reducing the chance of any single point of failure.\nThe multivalue answer routing policy ensures high service availability and a smooth user experience. Route 53 automatically checks the health of your resources and only includes healthy resources in the DNS response. This prevents traffic from being directed to unhealthy or downed servers. Health checks are conducted periodically, and if a resource becomes unhealthy, it is promptly removed from the pool of responses until it is deemed healthy again.\nThis policy is beneficial for applications that require high availability and resilience against individual instance failures without the complexity of managing cross-region load-balancing solutions. It’s easy to implement, requiring no additional infrastructure changes beyond the DNS configuration and health checks in Route 53. This makes it an appealing option for startups and enterprises that want to ensure the robustness and reliability of their web services across geographic regions or within a single region but across multiple resources."
-},
-{
 "id": "fc-0179",
 "category": "Service Deep-dive",
-"front": "EC2",
-"back": "EC2 instance type:\nAccelerated Computing: GPU. FPGA.\nCompute Optimized: Cost effective. Performance/Price ratio.\nStorage Optimized:High disk throughput. HDD Based. Low latency. High random IO. High sequential read. High IOPS.\nGP:  Fixed performance, bustable performance.\nMemory Optimized: Memory-intensive application. In memory application. High performance DB.\nConvertible Reserved Instances allow you to exchange for another convertible reserved instance of a different instance family.\nOperation\nPublic IPv4 without EIP\nPublic IPv4 with EIP\nPrivate IPv4\nIPv6\nStop & Start\nChanges\nStays\nReboot\nStays\nStays\nEC2 connection method:\nAWS Systems Manager\nRun Command: Allows you to remotely run scripts or install software across a fleet of instances without RDP or SSH.\nState Manager: Ensures your instances stay in a \"defined state\" (e.g., \"always have the antivirus running\"). If someone stops the service, SSM turns it back on.\nPatch Manager: Automates the process of patching operating systems.\nBootstraping: EC2 User Data or CloudFormation.\nAMI Baking with EC2 Image Builder."
+"front": "EC2 instance type",
+"back": "Accelerated Computing: GPU. FPGA.\nCompute Optimized: Cost effective. Performance/Price ratio.\nStorage Optimized:High disk throughput. HDD Based. Low latency. High random IO. High sequential read. High IOPS.\nGP:  Fixed performance, bustable performance.\nMemory Optimized: Memory-intensive application. In memory application. High performance DB."
 },
 {
 "id": "fc-0180",
 "category": "Service Deep-dive",
 "front": "HSM vs KMS",
-"back": "KMS, more control over access to data you encrypt. You can use the key management and cryptographic features directly in your applications or through AWS services that are integrated with AWS KMS. Enables you to maintain control over who can use your customer master keys and gain access to your encrypted data. AWS KMS is integrated with AWS CloudTrail, a service that delivers log files to an Amazon S3 bucket that you designate. By using CloudTrail, you can monitor and investigate how and when your master keys have been used and by whom.\nIf you want a managed service for creating and controlling your encryption keys, but you don’t want or need to operate your own HSM, consider using AWS Key Management Service.\nHSM: third-party validated hardware security modules under your exclusive control.\nCloudHSM (The Calculator): It is designed to perform math inside its secure boundary. You send it data and say \"Sign this with Key #101.\" The key never leaves the hardware; only the result (the signature) comes out.\nSecrets Manager (The Vault): It is designed to \"give\" you the secret so you can use it. You ask for \"DB_PASSWORD,\" and it sends the plaintext string to your application so your app can log in to a database.\nFeature\nAWS KMS\nAWS CloudHSM\nTenancy\nMulti-tenant. Shared hardware, but logically isolated keys.\nSingle-tenant. Dedicated physical hardware just for you.\nManagement\nFully Managed. AWS handles scaling, patching, and durability.\nSelf-Managed. You manage users, backups, and clustering.\nIntegration\nSeamless. Works with almost all AWS services (S3, EBS, RDS).\nManual. Requires custom integration via APIs (PKCS#11, JCE).\nKey Export\nNo. Keys generally cannot leave the service.\nYes. You can export keys (wrapped) for use elsewhere.\nCompliance\nFIPS 140-2/3 Level 3. (High).\nFIPS 140-2/3 Level 3. (Highest physical control).\nPricing\nLow. $1/month per key + request fees.\nHigh. ~$1.45+ per hour, per HSM instance (~$1,000+/mo)."
+"back": "KMS: Multi tenant, fully managed, low fee\nHSM: Single tenant, self managed, high fee"
 },
 {
 "id": "fc-0181",
@@ -1092,12 +996,6 @@
 "back": "A record with ALIAS target (an A-ALIAS record). For IPv6 use AAAA-ALIAS. Alias records are free and resolve to the AWS resource's current IPs."
 },
 {
-"id": "fc-0183",
-"category": "Networking",
-"front": "EFA vs ENA — when to use which?",
-"back": "ENA (Elastic Network Adapter): standard high-throughput VPC networking, up to 100+ Gbps for general workloads. EFA (Elastic Fabric Adapter): adds OS-bypass for HPC and tightly-coupled MPI/ML workloads needing low latency and high inter-node throughput."
-},
-{
 "id": "fc-0184",
 "category": "Networking",
 "front": "VPC Gateway endpoint vs Interface endpoint?",
@@ -1106,8 +1004,8 @@
 {
 "id": "fc-0185",
 "category": "Containers",
-"front": "Continuous infrastructure / tooling for containers: Karpenter, Proton, Prometheus — what's each for?",
-"back": "Karpenter: Kubernetes node autoscaler (right-sizes/just-in-time provisions nodes). Proton: managed templates/CI for container and serverless apps (platform team → dev self-service). Prometheus: metrics monitoring (pull-based time-series)."
+"front": "Karpenter, Proton, Prometheus",
+"back": "Karpenter: Kubernetes node autoscaler (right-sizes/just-in-time provisions nodes). \nProton: managed templates/CI for container and serverless apps (platform team → dev self-service). \nPrometheus: metrics monitoring (pull-based time-series)."
 },
 {
 "id": "fc-0186",
@@ -1119,7 +1017,7 @@
 "id": "fc-0187",
 "category": "CloudTrail",
 "front": "To audit data access at all levels in CloudTrail, what event types are needed?",
-"back": "Both Management events (control-plane API calls like CreateBucket) AND Data events (object-level operations like S3 GetObject, Lambda Invoke). Data events are off by default and billed extra."
+"back": "Both Management events (control-plane API calls like CreateBucket) AND Data events (object-level operations like S3 GetObject, Lambda Invoke). \n\nBy default, trails log management events. Data events are off billed extra."
 },
 {
 "id": "fc-0188",
@@ -1150,5 +1048,59 @@
 "category": "Term",
 "front": "X-Ray",
 "back": "distributed tracing service. It collects data about application requests and helps you analyze request paths, latency, errors, and downstream calls to services, databases, microservices, and APIs."
+},
+{
+"id": "fc-0193",
+"category": "",
+"front": "Shield / Shield Advanced / WAF",
+"back": "Shield. L3/L4\n\nAdvanced: + L7\nadvanced detection, visibility, cost protection, DDoS Response Team,  AWS WAF\n\nWAF: SQLi, XSS, BLock IP, Rate Limit, Bot Traffic Detection"
+},
+{
+"id": "fc-0194",
+"category": "",
+"front": "Compliance for CloudTrail/Config/SSM Compliance",
+"back": "CloudTrail = API audit trail\nAWS Config = AWS resource configuration compliance\nSSM Compliance = managed-node (EC2, on-prem) patch/configuration compliance"
+},
+{
+"id": "fc-0195",
+"category": "Logging & Monitoring",
+"front": "ELK Stack",
+"back": "Elasticsearch + Logstash + Kibana.\n\n- Logstash — ingest & parse logs\n- Elasticsearch — search/index store\n- Kibana — visualize\n\nData flow order: Logstash → Elasticsearch → Kibana (LEK)."
+},
+{
+"id": "fc-0196",
+"category": "Terms",
+"front": "AWS-managed prefix lists",
+"back": "Sets of IP address ranges for AWS services. You cannot create, modify, share, or delete an AWS-managed prefix list."
+},
+{
+"id": "fc-0197",
+"category": "Monitor/Logger",
+"front": "Management Events",
+"back": "visibility into management operations that are performed on resources in your AWS account.\nScope: Changes to the configuration or existence of the resource."
+},
+{
+"id": "fc-0198",
+"category": "Monitor/Logger",
+"front": "Data Events",
+"back": "provide visibility into the resource operations performed on or within a resource.\n Every interaction with the actual data stored in S3."
+},
+{
+"id": "fc-0199",
+"category": "Monitor/Logger",
+"front": "RDS event",
+"back": "infrastructure-related events and not actual database changes"
+},
+{
+"id": "fc-0200",
+"category": "Logging & Monitoring",
+"front": "CloudWatch Anomaly Detection",
+"back": "uses machine learning algorithms to automatically identify unusual patterns in your metrics without requiring manual threshold configuration. \nmay indicate problems or unexpected behavior in your applications or infrastructure."
+},
+{
+"id": "fc-0201",
+"category": "",
+"front": "Service Catalog",
+"back": "centrally managed to achieve IaC template governance at scale"
 }
 ]
