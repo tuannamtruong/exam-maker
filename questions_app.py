@@ -10,6 +10,7 @@ import json
 import random
 import re
 import shutil
+import subprocess
 from pathlib import Path
 from tkinter import messagebox
 
@@ -22,6 +23,29 @@ BACKLOG_DIR = ROOT / "data" / "questions" / "backlog"
 STATE_FILE = ROOT / ".app_state.json"
 STATE_KEY = "questions_font_scale"
 DIALOG_STATE_KEY = "questions_dialog_font_scale"
+LAST_FILE_KEY = "questions_last_file"
+
+
+def load_last_file() -> str | None:
+    try:
+        val = json.loads(STATE_FILE.read_text()).get(LAST_FILE_KEY)
+        return val if isinstance(val, str) else None
+    except (OSError, ValueError, TypeError):
+        return None
+
+
+def save_last_file(name: str) -> None:
+    try:
+        state = json.loads(STATE_FILE.read_text())
+        if not isinstance(state, dict):
+            state = {}
+    except (OSError, ValueError):
+        state = {}
+    state[LAST_FILE_KEY] = name
+    try:
+        STATE_FILE.write_text(json.dumps(state, indent=2))
+    except OSError:
+        pass
 
 
 def load_font_scale(key: str = STATE_KEY) -> float:
@@ -229,8 +253,12 @@ class QuestionsApp:
         self.button_font = self._font(14, "bold")
         self.switch_font = self._font(13)
 
+        # Capture the previous session's position *before* reload(), whose
+        # render() call overwrites the saved filename with item 1's name.
+        self._pending_last = load_last_file()
         self._build_ui()
         self.reload(reset_index=True)
+        self._restore_last_position()
 
         self.root.bind_all("<Control-n>", lambda _e: self.add_dialog())
         self.root.bind_all("<Command-n>", lambda _e: self.add_dialog())
@@ -312,12 +340,15 @@ class QuestionsApp:
         top.pack_propagate(False)
 
         self.title_var = ctk.StringVar(value="")
-        ctk.CTkLabel(
+        self.title_label = ctk.CTkLabel(
             top,
             textvariable=self.title_var,
             text_color=P["text"],
             font=self.title_font,
-        ).pack(side="left")
+            cursor="hand2",
+        )
+        self.title_label.pack(side="left")
+        self.title_label.bind("<Button-1>", lambda _e: self.open_file())
 
         ctk.CTkButton(
             top, text="+ Add", width=130, corner_radius=8,
@@ -475,6 +506,21 @@ class QuestionsApp:
     def current_dir(self) -> Path:
         return BACKLOG_DIR if self.show_backlog.get() else ACTIVE_DIR
 
+    def _restore_last_position(self) -> None:
+        """On startup, jump to the last question viewed in the previous session.
+
+        Matches by filename against the (default active, unshuffled) item list so
+        it survives added/removed items. Falls back to index 0 if not found.
+        """
+        name = self._pending_last
+        if not name:
+            return
+        for i, p in enumerate(self.items):
+            if p.name == name:
+                self.index = i
+                self.render()
+                return
+
     def reload(self, reset_index: bool = False) -> None:
         d = self.current_dir()
         d.mkdir(parents=True, exist_ok=True)
@@ -510,6 +556,7 @@ class QuestionsApp:
 
         path = self.items[self.index]
         self.current = parse_md(path)
+        save_last_file(path.name)
         self.title_var.set(f"{path.name}      {self.index + 1} of {len(self.items)}")
         self.scenario_label.configure(text=self.current["scenario"])
         set_text(self.question_text, self.current["question"])
@@ -651,6 +698,15 @@ class QuestionsApp:
         if self.items:
             self.index = min(prev_index, len(self.items) - 1)
             self.render()
+
+    def open_file(self) -> None:
+        if not self.current:
+            return
+        path = str(self.current["path"])
+        try:
+            subprocess.Popen(["code", path])
+        except OSError as e:
+            messagebox.showerror("Open File", f"Could not open file in VS Code:\n{e}")
 
     # ---- add dialog ----
 
