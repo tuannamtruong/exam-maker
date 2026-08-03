@@ -38,8 +38,8 @@ From the raw paste, build these fields:
   (e.g. a clipped "atalog" → "catalog", a doubled word, a stray character). Fix
   the typo; leave the awkward-but-intentional phrasing alone.
 - **question** — the question line (e.g. "Which … (Select TWO.)"). If the source
-  has *no* question line and the scenario poses the question, leave it out — do
-  **not** invent one. When the source *does* have a question line, keep it
+  has _no_ question line and the scenario poses the question, leave it out — do
+  **not** invent one. When the source _does_ have a question line, keep it
   verbatim — **same rule as the scenario**: don't reword or reflow it even if
   it's not grammatically correct, but obvious spelling typos may be fixed.
 - **options** — the answer choices, in source order, as plain strings (no `1.`
@@ -49,8 +49,8 @@ From the raw paste, build these fields:
   `"Hence, the correct answer(s) is/are: <text>"` line by matching that text back
   to the options. For "Select TWO" there are several.
 - **explanation** — assembled in this exact order:
-  1. **Correct-answer rationale on top** — the prose explaining *why the right
-     answer is right* (the paragraphs before "Hence, the correct answer…").
+  1. **Correct-answer rationale on top** — the prose explaining _why the right
+     answer is right_ (the paragraphs before "Hence, the correct answer…").
      **Keep the source's wording and nuance — do not condense to a tight
      paragraph.** Preserve the source's multi-paragraph prose largely verbatim;
      only drop genuinely tangential illustrations (e.g. a generic "Suppose an
@@ -59,7 +59,7 @@ From the raw paste, build these fields:
      Then a blank line.
   2. **One numbered line per wrong option**, `N. <reason>`, where `N` is that
      option's number. The source writes these as
-     *"The option that says: `<full option text>` is incorrect because `<reason>`."*
+     _"The option that says: `<full option text>` is incorrect because `<reason>`."_
      Match the quoted option text to its number and **keep `<reason>` close to
      verbatim** — only strip the wrapper, don't paraphrase or re-summarize the
      reason. If the user supplies preferred wording for a line, use it exactly.
@@ -114,7 +114,7 @@ the exact `.md` but writes nothing.** Scratch files go in `/tmp` (reads/writes
 there are pre-approved, so they never prompt):
 
 **Always overwrite `/tmp/original.md` and `/tmp/question.json` fresh — they are
-reused scratch paths that almost certainly hold a *previous* question.** The
+reused scratch paths that almost certainly hold a _previous_ question.** The
 `Write` tool refuses to clobber a file it hasn't Read this session, so don't
 fight it: write both files with `Bash` (heredoc), which overwrites
 unconditionally and never blocks on stale content. Never carry over leftover
@@ -159,44 +159,41 @@ gate.
 
 **Always take the user's edits in the diff view.** The user may edit
 `/tmp/adjusted.md` directly (it's the right pane of the diff) instead of
-describing changes in chat. Before appending, **re-read `/tmp/adjusted.md`**,
-fold any edits back into `/tmp/question.json` (it, not `adjusted.md`, is the
-source piped to the CLI), then **re-render and confirm the rendered preview
-matches `adjusted.md` byte-for-byte**. Their hand-edits win over your generated
-version — never discard them or append the pre-edit JSON.
+describing changes in chat. `/tmp/adjusted.md` is the **single source of truth**
+after this point — their hand-edits win over your generated version, so never
+append from a possibly-stale `/tmp/question.json`. The final append step below
+reads `adjusted.md` directly, which is exactly why it can't miss an edit.
 
-To fold edits back, don't re-type the JSON by hand — run the `md_to_json.py`
-helper, which parses the edited `.md` back into the CLI JSON:
+## Append (only after approval) — MANDATORY final step
 
-```bash
-python3 .claude/skills/add-question/md_to_json.py /tmp/adjusted.md > /tmp/question.json
-# verify the round-trip (renders identically, modulo blank lines the renderer normalizes):
-python3 .claude/skills/add-question/preview.py < /tmp/question.json | diff - /tmp/adjusted.md
-```
-
-A `diff` that shows only stray blank lines (e.g. a leading blank in a section
-left after deleting text) is fine — the renderer normalizes those. Any other
-difference means the parse missed an edit; fix it before appending.
-
-## Append (only after approval)
-
-Pipe the **same JSON** to the real CLI from the project root. Use a heredoc to
-keep newlines in multi-line fields intact:
+**Always run this script — never skip it, and never substitute a manual
+`add_question.py` call.** It re-parses the approved `/tmp/adjusted.md` (folding
+in any diff-pane hand-edits) and pipes the result to `add_question.py`, so the
+appended item is exactly what the user saw and edited:
 
 ```bash
-python3 add_question.py < /tmp/question.json
+python3 .claude/skills/add-question/append_from_adjusted.py
 ```
 
 It prints the new file path (e.g. `data/questions/active/q-0051.md`). Surface it
-to the user. On validation failure it prints `error: …` to stderr and exits `2`
-— fix the JSON and retry; never edit existing files to work around it.
+to the user. On validation failure it forwards `add_question.py`'s `error: …` to
+stderr and exits `2` — fix `/tmp/adjusted.md`, re-render if needed, and rerun the
+script; never edit existing files to work around it.
+
+(`add_question.py < /tmp/question.json` still works if you need the raw CLI, but
+the skill's approved path is always the script above, sourced from
+`adjusted.md`.)
 
 ## Hard rules
 
-- **Preview before write, every time.** Never call `add_question.py` until the
-  user has seen the preview and approved. Always open the side-by-side
+- **Preview before write, every time.** Never append until the user has seen the
+  preview and approved. Always open the side-by-side
   `code --diff /tmp/original.md /tmp/adjusted.md` so they can compare the raw
   source against the cleaned `.md`. "Any changes vs the original → show me first."
+- **Append with the script, always.** The final step is
+  `python3 .claude/skills/add-question/append_from_adjusted.py` — never skip it
+  and never hand-roll the append; it sources the approved `/tmp/adjusted.md` so
+  the user's diff-pane edits can't be lost.
 - **One question per invocation.** Many questions → `./run.sh import`.
 - **Append only.** Never modify an existing `q-NNNN.md`.
 - **Don't invent a question line** when the source has none (scenario-only is
@@ -219,7 +216,7 @@ to the user. On validation failure it prints `error: …` to stderr and exits `2
 - Wrong-option explanations in the source are **out of order** and interleaved
   with the correct-answer rationale — sort them by option number for the output.
 - Keep option text verbatim; the renderer `.strip()`s each one but does not
-  reword. The explanation is *lightly* edited at most — strip wrappers and
+  reword. The explanation is _lightly_ edited at most — strip wrappers and
   tangents, but keep the source's wording and nuance; don't rewrite it.
 - `preview.py` finds the project root as `parents[3]` of its own path. It only
   works while it lives at `.claude/skills/add-question/preview.py`.
