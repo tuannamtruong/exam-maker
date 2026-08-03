@@ -1102,5 +1102,203 @@
 "category": "",
 "front": "Service Catalog",
 "back": "centrally managed to achieve IaC template governance at scale"
+},
+{
+"id": "fc-0202",
+"category": "",
+"front": "CodeDeploy rollback option",
+"back": "1. Enable automatic rollback on deployment failure\n2. Enable automatic rollback when an alarm threshold is met\n3. Disable automatic rollback"
+},
+{
+"id": "fc-0203",
+"category": "",
+"front": "Apache Flink",
+"back": "open-source distributed data processing engine mainly for real-time stream processing, but it can also process batch data."
+},
+{
+"id": "fc-0204",
+"category": "",
+"front": "X-Ray: internal vs exernal.",
+"back": "inside the Lambda runtime process as part of the function code/separate process in the same Lambda execution environment"
+},
+{
+"id": "fc-0205",
+"category": "",
+"front": "RefreshCache API is exclusively accessible in which mode?",
+"back": "File gateway"
+},
+{
+"id": "fc-0206",
+"category": "",
+"front": "Service Catalog",
+"back": "cloud resources can be centrally managed to achieve IaC template governance at scale,"
+},
+{
+"id": "fc-0207",
+"category": "",
+"front": "Storage Gateway - Tape - realtime",
+"back": "Cant. Glacier"
+},
+{
+"id": "fc-0208",
+"category": "",
+"front": "Can Sticky sessions survive ec2 restart?",
+"back": "Yes, if the old ec2 survives."
+},
+{
+"id": "fc-0209",
+"category": "",
+"front": "EBS CSI driver requires xxx for permission and yyy to dynamically handle EBS volumes.",
+"back": "IAM Role + trust policy"
+},
+{
+"id": "fc-0210",
+"category": "",
+"front": "enable instances in a private subnet to connect to the Internet or other AWS services, but prevent the Internet from initiating a connection with those instances",
+"back": "NAT Gateway"
+},
+{
+"id": "fc-0211",
+"category": "",
+"front": "Service Quotas integrates with Organizations, but xxx must be enabled first.",
+"back": "trusted acess"
+},
+{
+"id": "fc-0212",
+"category": "",
+"front": "Firehose is optimized for xxx, not yyy.",
+"back": "delievery - real-time analysis"
+},
+{
+"id": "fc-0213",
+"category": "",
+"front": "Custom remediation actions in Config is used in conjunction with",
+"back": "SSM Automation documents"
+},
+{
+"id": "fc-0214",
+"category": "",
+"front": "SSM Maintenance Windows",
+"back": "define a schedule for when to perform potentially disruptive actions on your instances such as patching an operating system, updating drivers, or installing software or patches."
+},
+{
+"id": "fc-0215",
+"category": "",
+"front": "SSM Patch Manager",
+"back": "tagging instances based on the environment and its OS type. Automatically apply security patches during a maintenance window"
+},
+{
+"id": "fc-0216",
+"category": "",
+"front": "SSM Inventory",
+"back": "automatically collects metadata (\"inventory\") about your managed nodes so you can query and audit what is installed and configured."
+},
+{
+"id": "fc-0217",
+"category": "",
+"front": "SSM",
+"back": "control configuration details, such as server configurations, antivirus definitions, firewall settings, and more."
+},
+{
+"id": "fc-0218",
+"category": "",
+"front": "AWS Systems Manager Resource Data Sync",
+"back": "aggregates operational data collected by SSM and centralizes it into a single S3 bucket"
+},
+{
+"id": "fc-0219",
+"category": "",
+"front": "Systems Manager Configuration Compliance",
+"back": "scan your fleet of managed instances for patch compliance and configuration inconsistencies."
+},
+{
+"id": "fc-0220",
+"category": "",
+"front": "ECS capacity providers",
+"back": "manage the underlying infrastructure for ECS tasks"
+},
+{
+"id": "fc-0221",
+"category": "",
+"front": "CodeArtifact",
+"back": "store artifacts using popular package managers and build tools like Maven, Gradle, npm, Yarn, Twine, pip, and NuGet."
+},
+{
+"id": "fc-0222",
+"category": "",
+"front": "CodeDeploy reserves LifeCycle",
+"back": "BlockTraffic and Install"
+},
+{
+"id": "fc-0223",
+"category": "",
+"front": "Deployment groups are defined by xxx",
+"back": "tags"
+},
+{
+"id": "fc-0224",
+"category": "",
+"front": "Lightsail",
+"back": "provides compute, storage, and networking capacity and capabilities to deploy and manage websites and web applications in the cloud. It solves \"I want a server to deploy my app\"."
+},
+{
+"id": "fc-0225",
+"category": "",
+"front": "Metric Filter/EventBridge",
+"back": "MF: \n- condition = string/custom app logs\n- no AWS-native event exists\nEB: condition = AWS even"
+},
+{
+"id": "fc-0226",
+"category": "",
+"front": "Cross-account sharing requires",
+"back": "customer-managed KMS key"
+},
+{
+"id": "fc-0227",
+"category": "",
+"front": "Cognito identity pool works with",
+"back": "SAML and OpenID ident provider"
+},
+{
+"id": "fc-0228",
+"category": "",
+"front": "Elastic Beanstalk level of config.",
+"back": "- Settings applied directly to the environment (API)\n- Saved configurations\n- Configuration files (.ebextensions)\n- Default values"
+},
+{
+"id": "fc-0229",
+"category": "",
+"front": "Restrict one role, group, or permission set: xxx\nRestrict an entire account or OU : yyy",
+"back": "x: IAM Policy/permission set policy\ny: SCP"
+},
+{
+"id": "fc-0230",
+"category": "",
+"front": "CloudWatch Logs subscription",
+"back": "Automatically forward every new log event from a log group (or log stream) to another service as soon as it arrives."
+},
+{
+"id": "fc-0231",
+"category": "",
+"front": "CloudWatch Synthetics canary",
+"back": "create canaries, configurable scripts that run on a schedule, to monitor endpoints and APIs."
+},
+{
+"id": "fc-0232",
+"category": "",
+"front": "instance recovery failure feature for EC2 doesn’t apply to instances that",
+"back": "use EFA and instance store volumes."
+},
+{
+"id": "fc-0233",
+"category": "",
+"front": "EC2Rescue",
+"back": "diagnose and troubleshoot problems on Amazon EC2 Linux and Windows Server instances."
+},
+{
+"id": "fc-0234",
+"category": "",
+"front": "ASG: UpdatePolicy. AutoScalingRollingUpdate vs AutoScalingReplacingUpdate",
+"back": "AutoScalingRollingUpdate \n-same ASG.\n-instance by instance replace\n-harder rollback\nFor updating AMI or LT"
 }
 ]
