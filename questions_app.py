@@ -24,6 +24,7 @@ STATE_FILE = ROOT / ".app_state.json"
 STATE_KEY = "questions_font_scale"
 DIALOG_STATE_KEY = "questions_dialog_font_scale"
 LAST_FILE_KEY = "questions_last_file"
+BOOKMARKS_KEY = "questions_bookmarks"
 
 
 def load_last_file() -> str | None:
@@ -42,6 +43,34 @@ def save_last_file(name: str) -> None:
     except (OSError, ValueError):
         state = {}
     state[LAST_FILE_KEY] = name
+    try:
+        STATE_FILE.write_text(json.dumps(state, indent=2))
+    except OSError:
+        pass
+
+
+def load_bookmarks() -> set[str]:
+    """Return the set of bookmarked filenames from the state file.
+
+    Bookmarks are stored by filename (not in the .md itself) so nothing rewrites
+    the question files, and a bookmark follows an item across active/backlog moves
+    since the filename is preserved by those moves.
+    """
+    try:
+        val = json.loads(STATE_FILE.read_text()).get(BOOKMARKS_KEY, [])
+    except (OSError, ValueError, TypeError):
+        return set()
+    return {v for v in val if isinstance(v, str)} if isinstance(val, list) else set()
+
+
+def save_bookmarks(names: set[str]) -> None:
+    try:
+        state = json.loads(STATE_FILE.read_text())
+        if not isinstance(state, dict):
+            state = {}
+    except (OSError, ValueError):
+        state = {}
+    state[BOOKMARKS_KEY] = sorted(names)
     try:
         STATE_FILE.write_text(json.dumps(state, indent=2))
     except OSError:
@@ -233,6 +262,8 @@ class QuestionsApp:
 
         self.show_backlog = ctk.BooleanVar(value=False)
         self.shuffled = ctk.BooleanVar(value=False)
+        self.bookmarks_only = ctk.BooleanVar(value=False)
+        self.bookmarks: set[str] = load_bookmarks()
         self.items: list[Path] = []
         self.index = 0
         self.current: dict | None = None
@@ -279,6 +310,7 @@ class QuestionsApp:
         #   g              : jump to a specific question
         #   f / / / Ctrl+f : search questions by text
         #   e              : edit the current question
+        #   m / Ctrl+D     : bookmark / un-bookmark this question
         for key in ("<Left>", "<KeyPress-a>", "<KeyPress-A>"):
             self.root.bind(key, lambda _e: self.prev())
         for key in ("<Right>", "<KeyPress-d>", "<KeyPress-D>"):
@@ -297,6 +329,8 @@ class QuestionsApp:
             self.root.bind(key, lambda _e: self.search_dialog())
         for key in ("<KeyPress-e>", "<KeyPress-E>"):
             self.root.bind(key, lambda _e: self.edit_dialog())
+        for key in ("<KeyPress-m>", "<KeyPress-M>", "<Control-d>", "<Command-d>"):
+            self.root.bind(key, lambda _e: self.toggle_bookmark())
         for n in range(1, 8):
             self.root.bind(str(n), lambda _e, i=n: self._toggle_option(i))
         self.root.bind("<F11>", lambda _e: self._toggle_fullscreen())
@@ -369,6 +403,13 @@ class QuestionsApp:
         ctk.CTkSwitch(
             top, text="Shuffle", variable=self.shuffled,
             progress_color=P["primary"],
+            font=self.switch_font,
+            command=lambda: self.reload(reset_index=True),
+        ).pack(side="right", padx=8)
+
+        ctk.CTkSwitch(
+            top, text="Bookmarks only", variable=self.bookmarks_only,
+            progress_color=P["accent"],
             font=self.switch_font,
             command=lambda: self.reload(reset_index=True),
         ).pack(side="right", padx=8)
@@ -489,6 +530,16 @@ class QuestionsApp:
         )
         self.move_btn.pack(side="right")
 
+        self.bookmark_btn = ctk.CTkButton(
+            actions, text="☆ Bookmark", width=140, height=40, corner_radius=10,
+            fg_color="transparent", hover_color=P["soft"],
+            text_color=P["accent_hv"],
+            border_color=P["accent"], border_width=1,
+            font=self.switch_font,
+            command=self.toggle_bookmark,
+        )
+        self.bookmark_btn.pack(side="right", padx=8)
+
         # Explanation card — a wrapping label that grows to fit its text, so the
         # whole window scrolls if the explanation is long (no inner scrollbar).
         ec = card(scroll)
@@ -525,6 +576,8 @@ class QuestionsApp:
         d = self.current_dir()
         d.mkdir(parents=True, exist_ok=True)
         files = sorted(d.glob("q-*.md"))
+        if self.bookmarks_only.get():
+            files = [f for f in files if f.name in self.bookmarks]
         if self.shuffled.get():
             random.shuffle(files)
         self.items = files
@@ -547,8 +600,12 @@ class QuestionsApp:
 
         mode = "backlog" if self.show_backlog.get() else "active"
         if not self.items:
-            self.title_var.set(f"({mode}) — no questions")
+            self.title_var.set(
+                f"({mode}) — no bookmarks yet" if self.bookmarks_only.get()
+                else f"({mode}) — no questions"
+            )
             self.current = None
+            self.bookmark_btn.configure(state="disabled")
             self.scenario_label.configure(text="")
             set_text(self.question_text, "")
             self.explanation_label.configure(text="")
@@ -557,7 +614,7 @@ class QuestionsApp:
         path = self.items[self.index]
         self.current = parse_md(path)
         save_last_file(path.name)
-        self.title_var.set(f"{path.name}      {self.index + 1} of {len(self.items)}")
+        self._apply_bookmark_state()
         self.scenario_label.configure(text=self.current["scenario"])
         set_text(self.question_text, self.current["question"])
         self.explanation_label.configure(text="")
@@ -686,6 +743,43 @@ class QuestionsApp:
         self.index = (self.index - 1) % len(self.items)
         self.render()
 
+    def _apply_bookmark_state(self) -> None:
+        """Sync the title star and the Bookmark button to the current item."""
+        if not self.current:
+            return
+        name = self.current["path"].name
+        on = name in self.bookmarks
+        star = "★ " if on else ""
+        self.title_var.set(f"{star}{name}      {self.index + 1} of {len(self.items)}")
+        self.bookmark_btn.configure(
+            state="normal",
+            text="★ Bookmarked" if on else "☆ Bookmark",
+            fg_color=P["accent"] if on else "transparent",
+            text_color="white" if on else P["accent_hv"],
+        )
+
+    def toggle_bookmark(self) -> None:
+        if not self.current:
+            return
+        name = self.current["path"].name
+        now_on = name not in self.bookmarks
+        if now_on:
+            self.bookmarks.add(name)
+        else:
+            self.bookmarks.discard(name)
+        save_bookmarks(self.bookmarks)
+        # If we just un-bookmarked while viewing the bookmarks-only list, the item
+        # drops out of the view, so rebuild it; otherwise just refresh indicators
+        # in place (a full render would reset the submitted answer state).
+        if self.bookmarks_only.get() and not now_on:
+            prev_index = self.index
+            self.reload()
+            if self.items:
+                self.index = min(prev_index, len(self.items) - 1)
+                self.render()
+        else:
+            self._apply_bookmark_state()
+
     def toggle_backlog(self) -> None:
         if not self.current:
             return
@@ -693,6 +787,11 @@ class QuestionsApp:
         dst_dir = ACTIVE_DIR if self.show_backlog.get() else BACKLOG_DIR
         dst = unique_target(dst_dir, src.name)
         shutil.move(str(src), str(dst))
+        # Carry the bookmark across if the move had to rename (collision suffix).
+        if src.name in self.bookmarks and dst.name != src.name:
+            self.bookmarks.discard(src.name)
+            self.bookmarks.add(dst.name)
+            save_bookmarks(self.bookmarks)
         prev_index = self.index
         self.reload()
         if self.items:
@@ -729,6 +828,7 @@ class QuestionsApp:
             ("G", "Jump to a question"),
             ("F / / / Ctrl+F", "Search questions by text"),
             ("E", "Edit current question"),
+            ("M / Ctrl+D", "Bookmark / un-bookmark this question"),
             ("B", "Move to / restore from backlog"),
             ("Ctrl + N", "Add a new question"),
             ("Ctrl + +/-/0", "Font larger / smaller / reset"),

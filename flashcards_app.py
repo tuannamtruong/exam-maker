@@ -22,6 +22,7 @@ BACKLOG_DIR = ROOT / "data" / "flashcards" / "backlog"
 STATE_FILE = ROOT / ".app_state.json"
 STATE_KEY = "flashcards_font_scale"
 DIALOG_STATE_KEY = "flashcards_dialog_font_scale"
+BOOKMARKS_KEY = "flashcards_bookmarks"
 
 
 def load_font_scale(key: str = STATE_KEY) -> float:
@@ -40,6 +41,34 @@ def save_font_scale(scale: float, key: str = STATE_KEY) -> None:
     except (OSError, ValueError):
         state = {}
     state[key] = scale
+    try:
+        STATE_FILE.write_text(json.dumps(state, indent=2))
+    except OSError:
+        pass
+
+
+def load_bookmarks() -> set[str]:
+    """Return the set of bookmarked filenames from the state file.
+
+    Bookmarks are stored by filename (not in the .md itself) so nothing rewrites
+    the card files, and a bookmark follows a card across active/backlog moves
+    since the filename is preserved by those moves.
+    """
+    try:
+        val = json.loads(STATE_FILE.read_text()).get(BOOKMARKS_KEY, [])
+    except (OSError, ValueError, TypeError):
+        return set()
+    return {v for v in val if isinstance(v, str)} if isinstance(val, list) else set()
+
+
+def save_bookmarks(names: set[str]) -> None:
+    try:
+        state = json.loads(STATE_FILE.read_text())
+        if not isinstance(state, dict):
+            state = {}
+    except (OSError, ValueError):
+        state = {}
+    state[BOOKMARKS_KEY] = sorted(names)
     try:
         STATE_FILE.write_text(json.dumps(state, indent=2))
     except OSError:
@@ -137,6 +166,8 @@ class FlashcardsApp:
 
         self.show_backlog = ctk.BooleanVar(value=False)
         self.shuffled = ctk.BooleanVar(value=False)
+        self.bookmarks_only = ctk.BooleanVar(value=False)
+        self.bookmarks: set[str] = load_bookmarks()
         self.items: list[Path] = []
         self.index = 0
         self.current: dict | None = None
@@ -177,6 +208,8 @@ class FlashcardsApp:
             self.root.bind(key, lambda _e: self.search_dialog())
         for key in ("<KeyPress-e>", "<KeyPress-E>"):
             self.root.bind(key, lambda _e: self.edit_dialog())
+        for key in ("<KeyPress-m>", "<KeyPress-M>", "<Control-d>", "<Command-d>"):
+            self.root.bind(key, lambda _e: self.toggle_bookmark())
         self.root.bind("<F11>", lambda _e: self._toggle_fullscreen())
         self.root.bind("<Escape>", lambda _e: self._exit_fullscreen())
 
@@ -236,6 +269,13 @@ class FlashcardsApp:
         ctk.CTkSwitch(
             top, text="Shuffle", variable=self.shuffled,
             progress_color=P["primary"],
+            font=self.switch_font,
+            command=lambda: self.reload(reset_index=True),
+        ).pack(side="right", padx=8)
+
+        ctk.CTkSwitch(
+            top, text="Bookmarks only", variable=self.bookmarks_only,
+            progress_color=P["accent"],
             font=self.switch_font,
             command=lambda: self.reload(reset_index=True),
         ).pack(side="right", padx=8)
@@ -368,6 +408,16 @@ class FlashcardsApp:
         )
         self.move_btn.pack(side="right")
 
+        self.bookmark_btn = ctk.CTkButton(
+            btns, text="☆ Bookmark", width=140, height=40, corner_radius=10,
+            fg_color="transparent", hover_color=P["soft"],
+            text_color=P["accent_hv"],
+            border_color=P["accent"], border_width=1,
+            font=self.switch_font,
+            command=self.toggle_bookmark,
+        )
+        self.bookmark_btn.pack(side="right", padx=8)
+
     def current_dir(self) -> Path:
         return BACKLOG_DIR if self.show_backlog.get() else ACTIVE_DIR
 
@@ -375,6 +425,8 @@ class FlashcardsApp:
         d = self.current_dir()
         d.mkdir(parents=True, exist_ok=True)
         files = sorted(d.glob("fc-*.md"))
+        if self.bookmarks_only.get():
+            files = [f for f in files if f.name in self.bookmarks]
         if self.shuffled.get():
             random.shuffle(files)
         self.items = files
@@ -391,15 +443,19 @@ class FlashcardsApp:
         self.card.configure(fg_color=P["card_front"])
         mode = "backlog" if self.show_backlog.get() else "active"
         if not self.items:
-            self.title_var.set(f"({mode}) — no cards")
+            self.title_var.set(
+                f"({mode}) — no bookmarks yet" if self.bookmarks_only.get()
+                else f"({mode}) — no cards"
+            )
             self.category_var.set("")
             self.current = None
+            self.bookmark_btn.configure(state="disabled")
             self._set_card("")
             self.face_var.set("")
             return
         path = self.items[self.index]
         self.current = parse_md(path)
-        self.title_var.set(f"{path.name}      {self.index + 1} of {len(self.items)}")
+        self._apply_bookmark_state()
         cat = self.current["category"]
         self.category_var.set(f"CATEGORY · {cat.upper()}" if cat else "")
         self._set_card(self.current["front"])
@@ -441,6 +497,43 @@ class FlashcardsApp:
         self.index = (self.index - 1) % len(self.items)
         self.render()
 
+    def _apply_bookmark_state(self) -> None:
+        """Sync the title star and the Bookmark button to the current card."""
+        if not self.current:
+            return
+        name = self.current["path"].name
+        on = name in self.bookmarks
+        star = "★ " if on else ""
+        self.title_var.set(f"{star}{name}      {self.index + 1} of {len(self.items)}")
+        self.bookmark_btn.configure(
+            state="normal",
+            text="★ Bookmarked" if on else "☆ Bookmark",
+            fg_color=P["accent"] if on else "transparent",
+            text_color="white" if on else P["accent_hv"],
+        )
+
+    def toggle_bookmark(self) -> None:
+        if not self.current:
+            return
+        name = self.current["path"].name
+        now_on = name not in self.bookmarks
+        if now_on:
+            self.bookmarks.add(name)
+        else:
+            self.bookmarks.discard(name)
+        save_bookmarks(self.bookmarks)
+        # If we just un-bookmarked while viewing the bookmarks-only list, the card
+        # drops out of the view, so rebuild it; otherwise refresh in place (a full
+        # render would reset the current flip state).
+        if self.bookmarks_only.get() and not now_on:
+            prev_index = self.index
+            self.reload()
+            if self.items:
+                self.index = min(prev_index, len(self.items) - 1)
+                self.render()
+        else:
+            self._apply_bookmark_state()
+
     def toggle_backlog(self) -> None:
         if not self.current:
             return
@@ -448,6 +541,11 @@ class FlashcardsApp:
         dst_dir = ACTIVE_DIR if self.show_backlog.get() else BACKLOG_DIR
         dst = unique_target(dst_dir, src.name)
         shutil.move(str(src), str(dst))
+        # Carry the bookmark across if the move had to rename (collision suffix).
+        if src.name in self.bookmarks and dst.name != src.name:
+            self.bookmarks.discard(src.name)
+            self.bookmarks.add(dst.name)
+            save_bookmarks(self.bookmarks)
         prev_index = self.index
         self.reload()
         if self.items:

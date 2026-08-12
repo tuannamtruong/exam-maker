@@ -55,7 +55,11 @@ System packages required (one-time): `python3-tk`, `python3.12-venv`.
 
 ## Backlog model
 
-"Backlog" means *hidden from rotation, not deleted*. Implemented as a sibling folder. Each app has a "Show backlog" switch; while viewing the backlog, the **Move to Backlog** button becomes **Restore to Active**. File moves are done with `shutil.move`. Filename collisions are auto-suffixed with `-1`, `-2`, …
+"Backlog" means _hidden from rotation, not deleted_. Implemented as a sibling folder. Each app has a "Show backlog" switch; while viewing the backlog, the **Move to Backlog** button becomes **Restore to Active**. File moves are done with `shutil.move`. Filename collisions are auto-suffixed with `-1`, `-2`, …
+
+## Bookmarks
+
+Each app can **bookmark** (star) items and cycle through just the bookmarked ones. The star toggles via the **☆ Bookmark** button or the `m` / `Ctrl+D` keys; a **Bookmarks only** switch in the top bar filters the rotation to bookmarked items, and a `★` prefix marks the current item's title. Bookmarks are **not** written into the `.md` files (that would violate the append-only rule) — they live as a list of filenames in `.app_state.json` (`questions_bookmarks` / `flashcards_bookmarks`), so a bookmark follows an item across active/backlog moves and nothing rewrites the item. Bookmarks are orthogonal to the backlog: an item can be bookmarked in either folder, and "Bookmarks only" composes with "Show backlog".
 
 ## Hotkeys
 
@@ -65,36 +69,38 @@ The questions app has a **Hotkeys** button that shows this list in-app.
 
 **Questions app**
 
-| Key            | Action                          |
-| -------------- | ------------------------------- |
-| `←` / `a`      | Previous question               |
-| `→` / `d`      | Next question                   |
-| `↑` / `w`      | Scroll content up               |
-| `↓` / `s`      | Scroll content down             |
-| `Space` / `Enter` | Submit                       |
-| `1`–`7`        | Toggle that option              |
-| `g`            | Jump to a question              |
-| `f` / `/` / `Ctrl+F` | Search questions by text  |
-| `e`            | Edit the current question       |
-| `b`            | Move to / restore from backlog  |
-| `Ctrl+N`       | Add a new question              |
-| `Ctrl` `+`/`-`/`0` | Font larger / smaller / reset |
-| `F11` / `Esc`  | Toggle / exit fullscreen        |
+| Key                  | Action                         |
+| -------------------- | ------------------------------ |
+| `←` / `a`            | Previous question              |
+| `→` / `d`            | Next question                  |
+| `↑` / `w`            | Scroll content up              |
+| `↓` / `s`            | Scroll content down            |
+| `Space` / `Enter`    | Submit                         |
+| `1`–`7`              | Toggle that option             |
+| `g`                  | Jump to a question             |
+| `f` / `/` / `Ctrl+F` | Search questions by text       |
+| `e`                  | Edit the current question      |
+| `m` / `Ctrl+D`       | Bookmark / un-bookmark         |
+| `b`                  | Move to / restore from backlog |
+| `Ctrl+N`             | Add a new question             |
+| `Ctrl` `+`/`-`/`0`   | Font larger / smaller / reset  |
+| `F11` / `Esc`        | Toggle / exit fullscreen       |
 
 **Flashcards app**
 
-| Key            | Action                          |
-| -------------- | ------------------------------- |
-| `Space`        | Flip card                       |
-| `←` / `a`      | Previous card                   |
-| `→` / `d`      | Next card                       |
-| `g`            | Jump to a card                  |
-| `f` / `/` / `Ctrl+F` | Search cards by text      |
-| `e`            | Edit the current card           |
-| `b`            | Move to / restore from backlog  |
-| `Ctrl+N`       | Add a new flashcard             |
-| `Ctrl` `+`/`-`/`0` | Font larger / smaller / reset |
-| `F11` / `Esc`  | Toggle / exit fullscreen        |
+| Key                  | Action                         |
+| -------------------- | ------------------------------ |
+| `Space`              | Flip card                      |
+| `←` / `a`            | Previous card                  |
+| `→` / `d`            | Next card                      |
+| `g`                  | Jump to a card                 |
+| `f` / `/` / `Ctrl+F` | Search cards by text           |
+| `e`                  | Edit the current card          |
+| `m` / `Ctrl+D`       | Bookmark / un-bookmark         |
+| `b`                  | Move to / restore from backlog |
+| `Ctrl+N`             | Add a new flashcard            |
+| `Ctrl` `+`/`-`/`0`   | Font larger / smaller / reset  |
+| `F11` / `Esc`        | Toggle / exit fullscreen       |
 
 ## Data format — questions
 
@@ -106,18 +112,22 @@ correct: 1,3
 ---
 
 # Scenario
+
 optional context paragraph(s)
 
 # Question
+
 the question line (often ends with ?)
 
 # Options
+
 1. first option
 2. second option
 3. third option
 4. fourth option
 
 # Explanation
+
 optional prose explaining the correct answer(s)
 ```
 
@@ -141,9 +151,11 @@ category: Application
 ---
 
 # Front
+
 AppConfig
 
 # Back
+
 A capability of AWS Systems Manager (SSM). Manage, store, and quickly deploy
 application configurations independently of your code.
 ```
@@ -152,13 +164,13 @@ application configurations independently of your code.
 
 **Existing items must never be modified or rewritten by automation.** Only:
 
-- *append* new items (next `q-NNNN.md` / `fc-NNNN.md` via the add CLIs)
-- *move* items between `active/` and `backlog/` (done by the apps)
+- _append_ new items (next `q-NNNN.md` / `fc-NNNN.md` via the add CLIs)
+- _move_ items between `active/` and `backlog/` (done by the apps)
 
 If the user wants to fix wording or correct-answer marking on an existing item,
 they edit the `.md` by hand, or use the in-app **Edit** dialog (the `e` key /
 "Edit" button), which rewrites that single current item in place via `write_md`.
-This rule forbids *automation* silently rewriting items — the agent skill, bulk
+This rule forbids _automation_ silently rewriting items — the agent skill, bulk
 re-renders, format migrations. It does not forbid the user editing one item
 deliberately. Don't bulk-rewrite, don't re-render, don't migrate the format
 silently.
