@@ -36,12 +36,6 @@
 "back": "aggregating data from multiple database tables. Server-side solution."
 },
 {
-"id": "fc-0007",
-"category": "Application",
-"front": "Elastic Beanstalk",
-"back": "a PaaS, that deploys and manages applications without managing infrastructure."
-},
-{
 "id": "fc-0008",
 "category": "AI",
 "front": "Bedrock",
@@ -90,22 +84,10 @@
 "back": "Audio to Text."
 },
 {
-"id": "fc-0016",
-"category": "Backup",
-"front": "AWS Backup",
-"back": "centralize and automate data protection for cross AWS services, cross account and cross region. Compliance."
-},
-{
 "id": "fc-0017",
 "category": "Backup",
 "front": "Backup Vault Lock",
 "back": "WORM. Retention. Ransomware protection."
-},
-{
-"id": "fc-0018",
-"category": "Backup",
-"front": "Data Lifecycle Manager (DLM)",
-"back": "automates the creation, retention and deletion of EBS snapshots."
 },
 {
 "id": "fc-0019",
@@ -126,12 +108,6 @@
 "back": "configuration gap. Actual state of an AWS account no longer matches the intended state."
 },
 {
-"id": "fc-0022",
-"category": "Best practices",
-"front": "Compute Optimizer",
-"back": "Generate recommendations for EC2, Lambda, ASG, EBS."
-},
-{
 "id": "fc-0023",
 "category": "Best practices",
 "front": "Trusted Advisor",
@@ -148,12 +124,6 @@
 "category": "Best practices",
 "front": "Inspector",
 "back": "vulnerbilities and deviations from best Practices of application in EC2, ECR, Lambda, AWS Organizations."
-},
-{
-"id": "fc-0026",
-"category": "Big Data",
-"front": "Athena",
-"back": "SQL over S3. GB-TB. Ad-hoc. Loading/Transform isn’t desired. Serverless."
 },
 {
 "id": "fc-0027",
@@ -184,12 +154,6 @@
 "category": "Long-running Cluster",
 "front": "DataBrew",
 "back": "visual data preparation, transformation tool that enables users to clean and normalize data without writing any code. Data profiling and data lineage."
-},
-{
-"id": "fc-0033",
-"category": "Long-running Cluster",
-"front": "Redshift",
-"back": "DW. Use existing Business Intelligence tools."
 },
 {
 "id": "fc-0034",
@@ -232,12 +196,6 @@
 "category": "Container",
 "front": "Proton",
 "back": "(continuous) delivery service for containerized and serverless app. IaC."
-},
-{
-"id": "fc-0041",
-"category": "Container",
-"front": "Karpenter",
-"back": "Kubernetes Cluster Autoscaler / Infrastructure Automation."
 },
 {
 "id": "fc-0042",
@@ -285,7 +243,7 @@
 "id": "fc-0049",
 "category": "Kinesis + Lake formation",
 "front": "Kinesis Data Streams",
-"back": "real-time data streaming service for ingesting, storing, and processing high-throughput event data with millisecond latency. Shard. Cross accounts."
+"back": "real-time data streaming service for ingesting, storing, and processing high-throughput event data with millisecond latency. Shard."
 },
 {
 "id": "fc-0050",
@@ -354,24 +312,6 @@
 "back": "Hybrid. No data in cloud. Directory proxy."
 },
 {
-"id": "fc-0062",
-"category": "EC2 Placement Group",
-"front": "Cluster",
-"back": "Performance"
-},
-{
-"id": "fc-0063",
-"category": "EC2 Placement Group",
-"front": "Spread",
-"back": "Resilience – 7 EC2 per AZ"
-},
-{
-"id": "fc-0064",
-"category": "EC2 Placement Group",
-"front": "Partition",
-"back": "Topology awareness – 7 Partions per AZ"
-},
-{
 "id": "fc-0065",
 "category": "Outpost vs Local Zones (Distributed Cloud)",
 "front": "Local Zones",
@@ -386,7 +326,7 @@
 {
 "id": "fc-0067",
 "category": "Outpost vs Local Zones (Distributed Cloud)",
-"front": "Outposts brings AWS into your building, while Local Zones br",
+"front": "Outposts vs Local Zones",
 "back": "Outposts brings AWS into your building, while Local Zones brings AWS into user’s city."
 },
 {
@@ -408,12 +348,6 @@
 "back": "Resource Access Manager (RAM) securely share AWS resources across accounts, OUs, or entire AWS Organization. Eliminate duplicated resources in multiple accounts. Maintaining security and consistency."
 },
 {
-"id": "fc-0071",
-"category": "Monitor/Logger",
-"front": "CloudTrail",
-"back": "Auditing and Governance. Activity by user, role, or service in an AWS account. Action taken in Management Console, AWS Command Line Interface, and AWS SDKs and APIs."
-},
-{
 "id": "fc-0073",
 "category": "Monitor/Logger",
 "front": "Lake",
@@ -426,12 +360,6 @@
 "back": "easy way to process CloudTrail logs."
 },
 {
-"id": "fc-0075",
-"category": "Monitor/Logger",
-"front": "Log File Validation",
-"back": "determine whether a log file was modified, deleted, or unchanged."
-},
-{
 "id": "fc-0076",
 "category": "Monitor/Logger",
 "front": "Insights",
@@ -442,24 +370,6 @@
 "category": "Monitor/Logger",
 "front": "CloudWatch",
 "back": "Performance and Health. CPU utilization, Network utilization, Disk performance, and Disk Reads/Writes."
-},
-{
-"id": "fc-0078",
-"category": "Monitor/Logger",
-"front": "CloudWatch Application Insights",
-"back": "facilitates observability for your applications and underlying AWS resources."
-},
-{
-"id": "fc-0079",
-"category": "Monitor/Logger",
-"front": "CloudWatch Container Insights",
-"back": "collects data as performance log events using embedded metric format für EKS, ECS and k8s."
-},
-{
-"id": "fc-0080",
-"category": "Monitor/Logger",
-"front": "Config",
-"back": "Compliance. Assess, record, audit, and evaluate the configurations and relationships of your resources."
 },
 {
 "id": "fc-0081",
@@ -480,40 +390,10 @@
 "back": "copy network traffic at the ENI."
 },
 {
-"id": "fc-0084",
-"category": "Migration to AWS",
-"front": "Amazon MQ",
-"back": "migration from existing system with little to no changes. APIs such as JMS. AMQP, MQTT, STOMP or OpenWire. Need private network."
-},
-{
 "id": "fc-0085",
 "category": "Migration to AWS",
 "front": "Application Discovery Service",
 "back": "migration planning by collecting usage and configuration data about your on-premises servers."
-},
-{
-"id": "fc-0086",
-"category": "Migration to AWS",
-"front": "DataSync",
-"back": "simple and fast to move large amounts of data online between on-premises and AWS storage."
-},
-{
-"id": "fc-0087",
-"category": "Migration to AWS",
-"front": "Database Migration Service (DMS) migrate DBs with virtually",
-"back": "Database Migration Service (DMS) migrate DBs with virtually no downtime."
-},
-{
-"id": "fc-0088",
-"category": "Migration to AWS",
-"front": "Schema Conversion Tool",
-"back": "is typically used for heterogeneous migrations where you’re moving from one type of database to another (e.g., Oracle to PostgreSQL)."
-},
-{
-"id": "fc-0089",
-"category": "Migration to AWS",
-"front": "Migration Hub",
-"back": "provides a single place to discover your existing servers, plan migrations, and track the status of each application migration."
 },
 {
 "id": "fc-0090",
@@ -534,34 +414,16 @@
 "back": "Stateful virtual firewall for instance level control. Allow, Implicit Deny."
 },
 {
-"id": "fc-0094",
-"category": "Network",
-"front": "Bastion host",
-"back": "a computer on a network specifically designed and configured to withstand attacks. In public subnet. With public/elastic IP with RDP/SSH access."
-},
-{
 "id": "fc-0095",
 "category": "Network",
 "front": "VPC Network Access Analyzer",
 "back": "analyzes reachability and policy paths."
 },
 {
-"id": "fc-0096",
-"category": "Privacy",
-"front": "Secrets Manager",
-"back": "rotate, manage, and retrieve database credentials, API keys, OAuth tokens, and other secrets throughout their lifecycle. No en/decrypt."
-},
-{
 "id": "fc-0101",
 "category": "Privacy",
 "front": "S3 Object Lock",
 "back": "Legal -> Gorvernance -> Compliance"
-},
-{
-"id": "fc-0105",
-"category": "Security",
-"front": "Detective",
-"back": "how it happened and who was involved by building a visual map of the incident. AI powered."
 },
 {
 "id": "fc-0106",
@@ -582,22 +444,10 @@
 "back": "simplifies administration and maintenance across accounts and resources for a variety of protections. Including: WAF, Shield Advanced, SGs and NACLs, Network Firewall, and R53 Resolver DNS Firewall."
 },
 {
-"id": "fc-0109",
-"category": "Snow",
-"front": "Snowball",
-"back": "50TB or 80TB Capacity. 10 TB – 10 PB economical range."
-},
-{
 "id": "fc-0110",
 "category": "Snow",
 "front": "Snowball Edge",
 "back": "Storage + compute."
-},
-{
-"id": "fc-0111",
-"category": "Snow",
-"front": "Snowmobile",
-"back": "10 PB+."
 },
 {
 "id": "fc-0112",
@@ -610,18 +460,6 @@
 "category": "Standalone",
 "front": "Apache Flink Studio",
 "back": "data stream in real time."
-},
-{
-"id": "fc-0114",
-"category": "Standalone",
-"front": "CodeConnections",
-"back": "securely connect AWS services, such as CodePipeline, with third-party source control systems like GitHub."
-},
-{
-"id": "fc-0115",
-"category": "Standalone",
-"front": "Code Pipeline",
-"back": "fully managed CD service."
 },
 {
 "id": "fc-0116",
@@ -642,58 +480,16 @@
 "back": "tell which HTTP headers should be included or excluded in the responses sent by CloudFront."
 },
 {
-"id": "fc-0119",
-"category": "Standalone",
-"front": "Field-Level Encryption",
-"back": "securly upload user-submitted sensitive information to your web servers."
-},
-{
-"id": "fc-0120",
-"category": "Standalone",
-"front": "CloudHSM",
-"back": "cloud-based hardware security module (HSM) that enables you to easily generate and use your own encryption keys on the AWS Cloud."
-},
-{
 "id": "fc-0121",
 "category": "Standalone",
 "front": "Identity pool",
-"back": "temp authorization and accessing AWS services."
+"back": "AWS temp authorization and accessing AWS services."
 },
 {
 "id": "fc-0122",
 "category": "Standalone",
 "front": "User pool",
-"back": "authorization and authentication for applications. Can’t use AWSS. MFA."
-},
-{
-"id": "fc-0123",
-"category": "Standalone",
-"front": "Data Exchange",
-"back": "Easily find, subscribe to and use third-party data in the cloud."
-},
-{
-"id": "fc-0124",
-"category": "Standalone",
-"front": "ElastiCache",
-"back": "In-memory DB. Redis or Memcached aaS. Code changes."
-},
-{
-"id": "fc-0125",
-"category": "Standalone",
-"front": "Memcached",
-"back": "Simple schema, no replication, sharding, no backup, multi threads."
-},
-{
-"id": "fc-0126",
-"category": "Standalone",
-"front": "Redis",
-"back": "Advanced schema, multi-AZ, replication, backup & restore, transactions."
-},
-{
-"id": "fc-0127",
-"category": "Standalone",
-"front": "Auto Discovery",
-"back": "give information the list of active nodes."
+"back": "authentication and app-level authorization for applications.\nWhat user can do in my app. Can’t use AWSS. MFA."
 },
 {
 "id": "fc-0128",
@@ -706,18 +502,6 @@
 "category": "Standalone",
 "front": "Encryption S3",
 "back": "Client-C-S3-KMS"
-},
-{
-"id": "fc-0130",
-"category": "VPC Endpoint",
-"front": "Gateway",
-"back": "S3. No ENI for each AZ. Free."
-},
-{
-"id": "fc-0131",
-"category": "VPC Endpoint",
-"front": "Interface",
-"back": "no S3. EC2 API, Kinesis... Not HA."
 },
 {
 "id": "fc-0132",
@@ -750,18 +534,6 @@
 "back": "replication schedule. Disaster Recovery and data mobility. Region, cross-region."
 },
 {
-"id": "fc-0137",
-"category": "Lambda",
-"front": "execution role",
-"back": "grant Lambda functions access to other AWS services."
-},
-{
-"id": "fc-0138",
-"category": "Lambda",
-"front": "resource-based policies",
-"back": "grant usage permission to other AWS accounts on a per-resource basis."
-},
-{
 "id": "fc-0139",
 "category": "Lambda",
 "front": "Snapstart",
@@ -772,12 +544,6 @@
 "category": "Lambda",
 "front": "Lambda layers",
 "back": "utilized for build/space optimization or dependency reuse."
-},
-{
-"id": "fc-0141",
-"category": "Lambda",
-"front": "Gateway LB",
-"back": "deploy and manage a fleet of third-party virtual appliances. L3/4."
 },
 {
 "id": "fc-0142",
@@ -792,12 +558,6 @@
 "back": "dashboarding engine. No data. Monitoring, alerts, and dashboard views across Kubernetes , app, and infra."
 },
 {
-"id": "fc-0144",
-"category": "Lambda",
-"front": "Pinpoint",
-"back": "flexible, multi-channel marketing and customer (multi-)engagement service."
-},
-{
 "id": "fc-0145",
 "category": "Lambda",
 "front": "QuickSight",
@@ -810,34 +570,10 @@
 "back": "simplify common maintenance and deployment tasks of Amazon EC2 instances and other AWS resources."
 },
 {
-"id": "fc-0147",
-"category": "Lambda",
-"front": "Simple Email Service (SES)",
-"back": "sending bulk emails, transactional emails, and marketing communications, rather than system notifications."
-},
-{
 "id": "fc-0148",
 "category": "Lambda",
 "front": "Simple Workflow Service (SWF)",
 "back": "decoupled architecture in AWS"
-},
-{
-"id": "fc-0149",
-"category": "Lambda",
-"front": "Step Functions",
-"back": "serverless orchestration service that strings together multiple AWS services (Lambda, S3, and DynamoDB…) into a coordinated workflow."
-},
-{
-"id": "fc-0150",
-"category": "Lambda",
-"front": "Transfer Family",
-"back": "allows for secure file transfer over protocols such as SFTP, FTPS, and FTP directly into and out of Amazon S3 or Amazon EFS."
-},
-{
-"id": "fc-0151",
-"category": "Lambda",
-"front": "Wavelength",
-"back": "combines the high bandwidth and ultralow latency of 5G networks with AWS compute and storage services so that developers can innovate and build a new class of applications."
 },
 {
 "id": "fc-0152",
@@ -852,18 +588,6 @@
 "back": "per account, per region. For public internet."
 },
 {
-"id": "fc-0154",
-"category": "Terms",
-"front": "Customer-managed prefix lists",
-"back": "Sets of IP address ranges that you define and manage. You can share your prefix list with other AWS accounts, enabling those accounts to reference the prefix list in their own resources."
-},
-{
-"id": "fc-0156",
-"category": "Terms",
-"front": "Storage Gateway",
-"back": "-Volume: iSCSI.Local 100%. Disaster Recovery - EBS. Full disk backup.\n-Tape:  iSCSI.\n-File: SMB. NFS. S3."
-},
-{
 "id": "fc-0157",
 "category": "Terms",
 "front": "Protocol to Service",
@@ -876,40 +600,10 @@
 "back": "Scaling - target tracking: target value for a specific metric.\nScaling - step: capacity change based on the set of scaling / the size of the alarm breach."
 },
 {
-"id": "fc-0159",
-"category": "Terms",
-"front": "SQS",
-"back": "pooling: long == wait time; short == immediate.\nApproximateAgeOfOldestMessage metric is useful when applications have time-sensitive messages and you need to ensure that messages are processed within a specific time period."
-},
-{
-"id": "fc-0160",
-"category": "Terms",
-"front": "DNS record type",
-"back": "A Domain  IPv4\nAAAA Domain  IPv6\nCNAME Aliases one domain name to another.\nDNS standard forbids CNAME at the apex because it would conflict with NS/SOA records.\n\nALIAS Hostname -> AWS Resource\nLooks like an A/AAAA record to clients\nBehaves like a CNAME internally\n\nTXT\nStores text information, often used for verification."
-},
-{
-"id": "fc-0161",
-"category": "Terms",
-"front": "VIF",
-"back": "VIF: logical VLAN over a physical DX link.\nVIF private: access to private IPs.\nVIF public: access to AWS public zones. Public IP ranges."
-},
-{
 "id": "fc-0162",
 "category": "Terms",
 "front": "Enhanced Networking\nEFA/ENA",
 "back": "ENA Elastic Network Adapter \nstandard high-throughput VPC networking, up to 100+ Gbps for general workloads. \nhigh-performance networking.\nSR-IOV.\nHigher IO, lower CPU utilization.\nFree.\nLower & consistent (inter-instance) latency.\nBetter packet per second perforamnce.\n\n(Elastic Fabric Adapter)\nEFA = ENA + OS-bypass. Not available for Windows.\n: OS-bypass for HPC and tightly-coupled MPI/ML workloads needing low latency and high inter-node throughput."
-},
-{
-"id": "fc-0163",
-"category": "Terms",
-"front": "Transfer 50 TB from on prime to AWS",
-"back": "Snowball Device with 10Gbps local network: 5-7 days\nAWS Direct Connect with 10 Gbps: 11 hrs\nInternet 500 Mbps: 9,5 days\nInternet 50 Mbps: 48 days"
-},
-{
-"id": "fc-0164",
-"category": "Terms",
-"front": "Free transfer data cost",
-"back": "Data transferred between Amazon EC2, Amazon RDS, Amazon Redshift, Amazon ElastiCache instances, and Elastic Network Interfaces in the same Availability Zone is free\nData transfer between instances in private subnets is free"
 },
 {
 "id": "fc-0166",
@@ -926,7 +620,7 @@
 {
 "id": "fc-0168",
 "category": "Terms",
-"front": "HTTP",
+"front": "HTTP Protocol",
 "back": "4xx Client\n5xx Server"
 },
 {
@@ -942,18 +636,6 @@
 "back": "Max 365 days\nCant delete"
 },
 {
-"id": "fc-0173",
-"category": "Service Deep-dive",
-"front": "S3",
-"back": "Lifecycle - IA: min 30 days.\nEach S3 prefix can support:\n3500 req per s for PUT/COPY/POST/DELETE\n5500 req per s for GET\nS3 Transfer Acceleration (S3TA) when you need to move large amounts of data over long geographical distances between your client and an S3 bucket.\nPrerequisites when routing traffic using Route 53 to a website that is hosted in an S3 Bucket:\nThe S3 bucket name must be the same as the domain name.\nA registered domain name.\nS3 static website hosting\nBucket must be publicly readable\nR53 Alias record (A/A4)"
-},
-{
-"id": "fc-0174",
-"category": "Service Deep-dive",
-"front": "EBS",
-"back": "designed for superhigh performance situations, where lower latency and consistency of that lower latency are both important.\nMulti-attach feature\naccessible while performing snapshot."
-},
-{
 "id": "fc-0175",
 "category": "Service Deep-dive",
 "front": "RDS",
@@ -966,12 +648,6 @@
 "back": "Cluster\t- 1 AZ for low latency and high network throughput, useful for HPC or tightly coupled workloads.\nSpread\t- EC2 on separate underlying hardware. 7 per AZ\nSplits - Topology aware"
 },
 {
-"id": "fc-0177",
-"category": "Service Deep-dive",
-"front": "DynamoDB",
-"back": "PITR 35 days."
-},
-{
 "id": "fc-0179",
 "category": "Service Deep-dive",
 "front": "EC2 instance type",
@@ -982,12 +658,6 @@
 "category": "Service Deep-dive",
 "front": "HSM vs KMS",
 "back": "KMS: Multi tenant, fully managed, low fee\nHSM: Single tenant, self managed, high fee"
-},
-{
-"id": "fc-0181",
-"category": "EBS",
-"front": "EBS IOPS calculation for io1 volume (10 GiB)?",
-"back": "io1 = 50 IOPS/GiB. 10 GiB * 50 = 500 IOPS."
 },
 {
 "id": "fc-0182",
@@ -1020,12 +690,6 @@
 "back": "Both Management events (control-plane API calls like CreateBucket) AND Data events (object-level operations like S3 GetObject, Lambda Invoke). \n\nBy default, trails log management events. Data events are off billed extra."
 },
 {
-"id": "fc-0188",
-"category": "EC2",
-"front": "Golden AMI",
-"back": "A standardized, preconfigured AMI used as a trusted base image for launching EC2 instances. It usually includes the approved OS, security hardening, agents, patches, monitoring tools, and baseline application dependencies."
-},
-{
 "id": "fc-0189",
 "category": "EC2",
 "front": "EC2 Image Builder",
@@ -1044,12 +708,6 @@
 "back": "AWS Cloud Development Kit.\n\nIt is an Infrastructure as Code framework where you define AWS infrastructure using normal programming languages like TypeScript, Python, Java, Go, or C#. CDK then converts your code into an AWS CloudFormation template and deploys it through CloudFormation."
 },
 {
-"id": "fc-0192",
-"category": "Term",
-"front": "X-Ray",
-"back": "distributed tracing service. It collects data about application requests and helps you analyze request paths, latency, errors, and downstream calls to services, databases, microservices, and APIs."
-},
-{
 "id": "fc-0193",
 "category": "",
 "front": "Shield / Shield Advanced / WAF",
@@ -1066,12 +724,6 @@
 "category": "Logging & Monitoring",
 "front": "ELK Stack",
 "back": "Elasticsearch + Logstash + Kibana.\n\n- Logstash — ingest & parse logs\n- Elasticsearch — search/index store\n- Kibana — visualize\n\nData flow order: Logstash → Elasticsearch → Kibana (LEK)."
-},
-{
-"id": "fc-0196",
-"category": "Terms",
-"front": "AWS-managed prefix lists",
-"back": "Sets of IP address ranges for AWS services. You cannot create, modify, share, or delete an AWS-managed prefix list."
 },
 {
 "id": "fc-0197",
@@ -1096,12 +748,6 @@
 "category": "Logging & Monitoring",
 "front": "CloudWatch Anomaly Detection",
 "back": "uses machine learning algorithms to automatically identify unusual patterns in your metrics without requiring manual threshold configuration. \nmay indicate problems or unexpected behavior in your applications or infrastructure."
-},
-{
-"id": "fc-0201",
-"category": "",
-"front": "Service Catalog",
-"back": "centrally managed to achieve IaC template governance at scale"
 },
 {
 "id": "fc-0202",
@@ -1134,12 +780,6 @@
 "back": "cloud resources can be centrally managed to achieve IaC template governance at scale,"
 },
 {
-"id": "fc-0207",
-"category": "",
-"front": "Storage Gateway - Tape - realtime",
-"back": "Cant. Glacier"
-},
-{
 "id": "fc-0208",
 "category": "",
 "front": "Can Sticky sessions survive ec2 restart?",
@@ -1152,12 +792,6 @@
 "back": "IAM Role + trust policy"
 },
 {
-"id": "fc-0210",
-"category": "",
-"front": "enable instances in a private subnet to connect to the Internet or other AWS services, but prevent the Internet from initiating a connection with those instances",
-"back": "NAT Gateway"
-},
-{
 "id": "fc-0211",
 "category": "",
 "front": "Service Quotas integrates with Organizations, but xxx must be enabled first.",
@@ -1168,12 +802,6 @@
 "category": "",
 "front": "Firehose is optimized for xxx, not yyy.",
 "back": "delievery - real-time analysis"
-},
-{
-"id": "fc-0213",
-"category": "",
-"front": "Custom remediation actions in Config is used in conjunction with",
-"back": "SSM Automation documents"
 },
 {
 "id": "fc-0214",
@@ -1194,12 +822,6 @@
 "back": "automatically collects metadata (\"inventory\") about your managed nodes so you can query and audit what is installed and configured."
 },
 {
-"id": "fc-0217",
-"category": "",
-"front": "SSM",
-"back": "control configuration details, such as server configurations, antivirus definitions, firewall settings, and more."
-},
-{
 "id": "fc-0218",
 "category": "",
 "front": "AWS Systems Manager Resource Data Sync",
@@ -1218,18 +840,6 @@
 "back": "manage the underlying infrastructure for ECS tasks"
 },
 {
-"id": "fc-0221",
-"category": "",
-"front": "CodeArtifact",
-"back": "store artifacts using popular package managers and build tools like Maven, Gradle, npm, Yarn, Twine, pip, and NuGet."
-},
-{
-"id": "fc-0222",
-"category": "",
-"front": "CodeDeploy reserves LifeCycle",
-"back": "BlockTraffic and Install"
-},
-{
 "id": "fc-0223",
 "category": "",
 "front": "Deployment groups are defined by xxx",
@@ -1240,12 +850,6 @@
 "category": "",
 "front": "Lightsail",
 "back": "provides compute, storage, and networking capacity and capabilities to deploy and manage websites and web applications in the cloud. It solves \"I want a server to deploy my app\"."
-},
-{
-"id": "fc-0225",
-"category": "",
-"front": "Metric Filter/EventBridge",
-"back": "MF: \n- condition = string/custom app logs\n- no AWS-native event exists\nEB: condition = AWS even"
 },
 {
 "id": "fc-0226",
@@ -1293,12 +897,24 @@
 "id": "fc-0233",
 "category": "",
 "front": "EC2Rescue",
-"back": "diagnose and troubleshoot problems on Amazon EC2 Linux and Windows Server instances."
+"back": "diagnose and troubleshoot problems on EC2 Linux and Windows Server instances.  unreachable or fails to boot properly."
 },
 {
 "id": "fc-0234",
 "category": "",
 "front": "ASG: UpdatePolicy. AutoScalingRollingUpdate vs AutoScalingReplacingUpdate",
 "back": "AutoScalingRollingUpdate \n-same ASG.\n-instance by instance replace\n-harder rollback\nFor updating AMI or LT"
+},
+{
+"id": "fc-0235",
+"category": "",
+"front": "Policy or Role attach to instance profile",
+"back": "Role. EC2->Instance Profile -> Role -> Permssion(Policy)"
+},
+{
+"id": "fc-0236",
+"category": "",
+"front": "LSI - Consistency, Capacity",
+"back": "Up to 5. (vs 20)\nstrongly consistent and eventually consistent\nShares the table's capacity\nShares the table's partition"
 }
 ]
